@@ -11,7 +11,11 @@ type CircularFluidMeterConfig = {
   borderWidth: number;
   padding: number;
   backgroundColor: string;
+  showProgress: boolean;
+  textColor: string;
   fluidConfiguration: FluidLayerConfiguration;
+  fontFamily: string;
+  fontSize: number;
 };
 
 class CircularFluidMeter extends BaseMeter {
@@ -52,12 +56,48 @@ class CircularFluidMeter extends BaseMeter {
     this._backgroundColor = color;
   }
 
+  private _textColor = '';
+  public get textColor() {
+    return this._textColor;
+  }
+  public set textColor(color: string) {
+    this._textColor = color;
+  }
+
+  private _fontFamily = '';
+  public get fontFamily() {
+    return this._fontFamily;
+  }
+  public set fontFamily(family: string) {
+    this._fontFamily = family;
+  }
+
+  private _fontSize = 16;
+  public get fontSize() {
+    return this._fontSize;
+  }
+  public set fontSize(size: number) {
+    this._fontSize = size;
+  }
+
+  private _showProgress = true;
+  public get showProgress() {
+    return this._showProgress;
+  }
+  public set showProgress(show: boolean) {
+    this._showProgress = show;
+  }
+
   constructor(
     container: HTMLElement,
     config: CircularFluidMeterConfig = {
       borderWidth: 25,
       padding: 25,
       backgroundColor: '#00fff0',
+      showProgress: true,
+      textColor: '#ffffff',
+      fontFamily: 'Arial',
+      fontSize: 100,
       fluidConfiguration: {
         color: '#ff0000',
         waveSpeed: Speed.FAST,
@@ -71,7 +111,11 @@ class CircularFluidMeter extends BaseMeter {
     this._padding = config.padding;
     this._progress = config.initialProgress;
     this._backgroundColor = config.backgroundColor;
+    this.textColor = config.textColor;
     this._fluidConfiguration = config.fluidConfiguration;
+    this._showProgress = config.showProgress;
+    this._fontFamily = config.fontFamily;
+    this._fontSize = config.fontSize;
 
     this.calculateDrawingValues();
   }
@@ -91,6 +135,9 @@ class CircularFluidMeter extends BaseMeter {
     if (this._layers) {
       this.drawLayer(this._layers[0]);
       this.drawLayer(this._layers[1]);
+    }
+    if (this._showProgress) {
+      this.drawText();
     }
     // clip any "fluid" outside the meter
     this._context.restore();
@@ -161,6 +208,20 @@ class CircularFluidMeter extends BaseMeter {
 
     this._context.fillStyle = layer.color;
     this._context.fill();
+    this._context.restore();
+  }
+
+  private drawText(): void {
+    const text = this._progress.toString();
+
+    this._context.save();
+    this._context.font = `${this._fontSize}px ${this._fontFamily}`;
+
+    this._context.fillStyle = this._textColor;
+    this._context.textAlign = 'center';
+    this._context.textBaseline = 'middle';
+    this._context.filter = 'drop-shadow(0px 0px 5px rgba(0,0,0,0.4))';
+    this._context.fillText(text, this._width / 2, this._height / 2);
     this._context.restore();
   }
 
