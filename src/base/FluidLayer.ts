@@ -1,12 +1,17 @@
 type FluidLayer = {
-  color: string;
-  angle: number;
+  waveAmplitude: number;
+  waveSpeed: number;
   horizontalPosition: number;
+  angle: number;
+};
+
+type FluidLayerConfiguration = {
+  color: string;
   angularSpeed: number;
   maxAmplitude: number | string;
   frequency: number;
-  horizontalSpeed: number;
+  horizontalSpeed: number | string;
   initialHeight: number;
 };
 
-export { FluidLayer };
+export { FluidLayer, FluidLayerConfiguration };

@@ -1,17 +1,17 @@
 import { BaseMeter } from '../base/BaseMeter';
-import { FluidLayer } from '../base/FluidLayer';
+import { FluidLayer, FluidLayerConfiguration } from '../base/FluidLayer';
 
 type CircularFluidMeterConfig = {
   borderWidth: number;
   padding: number;
   backgroundColor: string;
-  backgroundLayer: FluidLayer;
+  backgroundLayer: FluidLayerConfiguration;
 };
 
 class CircularFluidMeter extends BaseMeter {
   private _backgroundLayer: FluidLayer;
+  private _backgroundLayerConfiguration: FluidLayerConfiguration;
   // protected _foregroundLayer: FluidLayer;
-  private _backgroundWaveAmplitude = 0;
 
   private _progress = 50;
   public get progress() {
@@ -55,12 +55,10 @@ class CircularFluidMeter extends BaseMeter {
       backgroundColor: '#00ff00',
       backgroundLayer: {
         color: '#ff0000',
-        angle: 0,
-        horizontalPosition: 0,
+        horizontalSpeed: '199%',
         angularSpeed: 140,
-        maxAmplitude: 15,
+        maxAmplitude: '15%',
         frequency: 40,
-        horizontalSpeed: 150,
         initialHeight: 0
       }
     }
@@ -69,7 +67,14 @@ class CircularFluidMeter extends BaseMeter {
     this._borderWidth = config.borderWidth;
     this._padding = config.padding;
     this._backgroundColor = config.backgroundColor;
-    this._backgroundLayer = config.backgroundLayer;
+    this._backgroundLayerConfiguration = config.backgroundLayer;
+    // init
+    this._backgroundLayer = {
+      angle: 0,
+      horizontalPosition: 0,
+      waveAmplitude: 0,
+      waveSpeed: 0
+    };
     // calculation
     this.calculateDrawingValues();
   }
@@ -77,7 +82,7 @@ class CircularFluidMeter extends BaseMeter {
   protected draw(): void {
     this.clear();
     this.drawBackground();
-    this.drawLayer(this._backgroundLayer);
+    this.drawLayer(this._backgroundLayer, this._backgroundLayerConfiguration);
   }
 
   private clear() {
@@ -85,45 +90,72 @@ class CircularFluidMeter extends BaseMeter {
   }
 
   private calculateDrawingValues(): void {
-    this._backgroundWaveAmplitude = this.calculateWaveAmplitude(
-      this._backgroundLayer
+    this._backgroundLayer.waveAmplitude = this.calculateWaveAmplitude(
+      this._backgroundLayerConfiguration
+    );
+    this._backgroundLayer.waveSpeed = this.calculateWaveSpeed(
+      this._backgroundLayerConfiguration
     );
   }
 
-  private calculateWaveAmplitude(layer: FluidLayer): number {
+  private calculateWaveSpeed(
+    layerConfiguration: FluidLayerConfiguration
+  ): number {
     let result = 0;
-
-    if (typeof layer.maxAmplitude == 'number') {
-      result = layer.maxAmplitude;
-    } else if (typeof layer.maxAmplitude == 'string') {
-      const percentage = parseFloat(layer.maxAmplitude);
-      result = (percentage / 2 / 100) * (this._height - this._padding * 2);
+    if (typeof layerConfiguration.horizontalSpeed === 'number') {
+      result = layerConfiguration.horizontalSpeed;
+    } else if (typeof layerConfiguration.horizontalSpeed === 'string') {
+      const percentage = parseFloat(layerConfiguration.horizontalSpeed);
+      result = (percentage / 100) * this._width;
     }
 
     return result;
   }
 
-  private drawLayer(layer: FluidLayer) {
+  private calculateWaveAmplitude(
+    layerConfiguration: FluidLayerConfiguration
+  ): number {
+    let result = 0;
+
+    if (typeof layerConfiguration.maxAmplitude == 'number') {
+      result = layerConfiguration.maxAmplitude;
+    } else if (typeof layerConfiguration.maxAmplitude == 'string') {
+      const percentage = parseFloat(layerConfiguration.maxAmplitude);
+      if (this._height > this._width) {
+        result = (percentage / 2 / 100) * (this._width - this._padding * 2);
+      } else {
+        result = (percentage / 2 / 100) * (this._height - this._padding * 2);
+      }
+    }
+
+    return result;
+  }
+
+  private drawLayer(
+    layer: FluidLayer,
+    layerConfiguration: FluidLayerConfiguration
+  ) {
     // calculate wave angle
-    if (layer.angularSpeed > 0) {
-      layer.angle += layer.angularSpeed * this._elapsed;
+    if (layerConfiguration.angularSpeed > 0) {
+      layer.angle += layerConfiguration.angularSpeed * this._elapsed;
       layer.angle = layer.angle < 0 ? layer.angle + 360 : layer.angle;
     }
 
     // calculate horizontal position
-    layer.horizontalPosition += layer.horizontalSpeed * this._elapsed;
-    if (layer.horizontalSpeed > 0) {
-      layer.horizontalPosition > Math.pow(2, 53) ? 0 : layer.horizontalPosition;
-    } else if (layer.horizontalPosition < 0) {
-      layer.horizontalPosition < -1 * Math.pow(2, 53)
-        ? 0
-        : layer.horizontalPosition;
-    }
+    layer.horizontalPosition += layer.waveSpeed * this._elapsed;
+    // if (layer.horizontalSpeed > 0) {
+    //   horizontalPosition =
+    //     horizontalPosition > Math.pow(2, 53) ? 0 : horizontalPosition;
+    // } else if (horizontalPosition < 0) {
+    //   layer.horizontalPosition < -1 * Math.pow(2, 53)
+    //     ? 0
+    //     : layer.horizontalPosition;
+    // }
 
     let x = 0;
     let y = 0;
     const amplitude =
-      this._backgroundWaveAmplitude * Math.sin((layer.angle * Math.PI) / 180);
+      layer.waveAmplitude * Math.sin((layer.angle * Math.PI) / 180);
 
     const meterBottom =
       this._height -
@@ -138,17 +170,20 @@ class CircularFluidMeter extends BaseMeter {
     //   currentFillPercentage -= 15 * dt;
     // }
 
-    layer.initialHeight = meterBottom - fluidAmount;
+    const initialHeight = meterBottom - fluidAmount;
 
     this._context.save();
     this._context.beginPath();
 
-    this._context.lineTo(0, layer.initialHeight);
+    this._context.lineTo(0, initialHeight);
 
     while (x < this._width) {
       y =
-        layer.initialHeight +
-        amplitude * Math.sin((x + layer.horizontalPosition) / layer.frequency);
+        initialHeight +
+        amplitude *
+          Math.sin(
+            (x + layer.horizontalPosition) / layerConfiguration.frequency
+          );
       this._context.lineTo(x, y);
       x++;
     }
@@ -157,7 +192,7 @@ class CircularFluidMeter extends BaseMeter {
     this._context.lineTo(0, this._height);
     this._context.closePath();
 
-    this._context.fillStyle = layer.color;
+    this._context.fillStyle = layerConfiguration.color;
     this._context.fill();
     this._context.restore();
   }
