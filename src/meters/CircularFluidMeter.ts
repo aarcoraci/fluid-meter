@@ -291,6 +291,7 @@ class CircularFluidMeter extends BaseMeter {
   }
 
   private drawForeground(): void {
+    const meterRadius = this.calculateCircleRadius();
     this._context.save();
     this._context.lineWidth = this._borderWidth;
     this._context.strokeStyle = '#0000ff';
@@ -298,12 +299,25 @@ class CircularFluidMeter extends BaseMeter {
     this._context.arc(
       this._width / 2,
       this._height / 2,
-      this.calculateCircleRadius() / 2 - this._borderWidth / 2,
+      meterRadius / 2 - this._borderWidth / 2,
       0,
       2 * Math.PI
     );
     this._context.closePath();
     this._context.stroke();
+    this._context.restore();
+
+    // blur
+    this._context.save();
+    this._context.filter = 'blur(10px) blur(15px) opacity(0.65)';
+    const x = this._width / 2 - this._width / 6;
+    const y = this._height / 2 - this._height / 6;
+    const size = meterRadius * 0.095;
+    this._context.fillStyle = 'white';
+    this._context.beginPath();
+    this._context.arc(x, y, size, 0, 2 * Math.PI);
+    this._context.closePath();
+    this._context.fill();
     this._context.restore();
   }
 
