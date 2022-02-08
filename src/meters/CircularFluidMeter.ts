@@ -13,6 +13,7 @@ type CircularFluidMeterConfig = {
   padding?: number;
   backgroundColor?: string;
   showProgress?: boolean;
+  showBubbles?: boolean;
   textColor?: string;
   fluidConfiguration: FluidLayerConfiguration;
   fontFamily?: string;
@@ -25,7 +26,7 @@ class CircularFluidMeter extends BaseMeter {
   private _layers?: [FluidLayer, FluidLayer];
   private _bubbles = new BubblesLayer();
 
-  private _progress = 50;
+  private _progress = 33;
   public get progress() {
     return this._progress;
   }
@@ -91,6 +92,14 @@ class CircularFluidMeter extends BaseMeter {
     this._showProgress = show;
   }
 
+  private _showBubbles = true;
+  public get showBubbles() {
+    return this._showBubbles;
+  }
+  public set showBubbles(show: boolean) {
+    this._showBubbles = show;
+  }
+
   private _progressFormatter = (value: string): string => `${value}%`;
   public setProgressFormatter(formatter: (value: string) => string) {
     this._progressFormatter = formatter;
@@ -117,6 +126,7 @@ class CircularFluidMeter extends BaseMeter {
     this._showProgress = config.showProgress || this._showProgress;
     this._fontFamily = config.fontFamily || this._fontFamily;
     this._fontSize = config.fontSize || this._fontSize;
+    this._showBubbles = config.showBubbles || this._showBubbles;
     this._progressFormatter =
       config.progressFormatter || this._progressFormatter;
 
@@ -154,25 +164,31 @@ class CircularFluidMeter extends BaseMeter {
   }
 
   private calculateDrawingValues(): void {
+    const meterRadius = this.calculateCircleRadius();
     this._layers = FluidLayerHelper.buildFluidLayersFromConfiguration(
       this._fluidConfiguration,
-      this.calculateCircleRadius()
+      meterRadius
     );
     // values for the bubble layer
-    const minY = this.getMeterBottomLimit() * 0.85;
-    const maxY = this.getMeterBottomLimit();
+    const meterBottomLimit = this.getMeterBottomLimit();
+    const minY = meterBottomLimit * 0.85;
+    const maxY = meterBottomLimit;
 
     const yThreshold =
-      maxY - this.getFluidLevel() + this._layers[0].waveAmplitude;
+      maxY -
+      this.getFluidLevel() +
+      this._layers[0].waveAmplitude +
+      this._bubbles.averageSize * 2;
 
-    const minX = this._width / 2 - this.calculateCircleRadius();
-    const maxX = this._width / 2 + this.calculateCircleRadius();
+    const minX = this._width / 2 - meterRadius;
+    const maxX = this._width / 2 + meterRadius;
 
     this._bubbles.minY = minY;
     this._bubbles.maxY = maxY;
     this._bubbles.minX = minX;
     this._bubbles.maxX = maxX;
     this._bubbles.yThreshold = yThreshold;
+    this._bubbles.averageSize = meterRadius * 0.01;
     this._bubbles.reset();
   }
 
