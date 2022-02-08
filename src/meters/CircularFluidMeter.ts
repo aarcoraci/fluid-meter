@@ -7,15 +7,16 @@ import {
 } from '../base/FluidLayer';
 
 type CircularFluidMeterConfig = {
-  initialProgress: number;
-  borderWidth: number;
-  padding: number;
-  backgroundColor: string;
-  showProgress: boolean;
-  textColor: string;
+  initialProgress?: number;
+  borderWidth?: number;
+  padding?: number;
+  backgroundColor?: string;
+  showProgress?: boolean;
+  textColor?: string;
   fluidConfiguration: FluidLayerConfiguration;
-  fontFamily: string;
-  fontSize: number;
+  fontFamily?: string;
+  fontSize?: number;
+  progressFormatter?: (value: string) => string;
 };
 
 class CircularFluidMeter extends BaseMeter {
@@ -48,7 +49,7 @@ class CircularFluidMeter extends BaseMeter {
     this.calculateDrawingValues();
   }
 
-  private _backgroundColor = '';
+  private _backgroundColor = '#c9c9c9';
   public get backgroundColor() {
     return this._backgroundColor;
   }
@@ -64,7 +65,7 @@ class CircularFluidMeter extends BaseMeter {
     this._textColor = color;
   }
 
-  private _fontFamily = '';
+  private _fontFamily = 'Arial';
   public get fontFamily() {
     return this._fontFamily;
   }
@@ -88,34 +89,34 @@ class CircularFluidMeter extends BaseMeter {
     this._showProgress = show;
   }
 
+  private _progressFormatter = (value: string): string => `${value}%`;
+  public setProgressFormatter(formatter: (value: string) => string) {
+    this._progressFormatter = formatter;
+  }
+
   constructor(
     container: HTMLElement,
     config: CircularFluidMeterConfig = {
-      borderWidth: 25,
-      padding: 25,
-      backgroundColor: '#00fff0',
-      showProgress: true,
-      textColor: '#ffffff',
-      fontFamily: 'Arial',
       fontSize: 100,
       fluidConfiguration: {
         color: '#ff0000',
         waveSpeed: Speed.FAST,
         horizontalSpeed: Speed.NORMAL
-      },
-      initialProgress: 45
+      }
     }
   ) {
     super(container);
-    this._borderWidth = config.borderWidth;
-    this._padding = config.padding;
-    this._progress = config.initialProgress;
-    this._backgroundColor = config.backgroundColor;
-    this.textColor = config.textColor;
+    this._borderWidth = config.borderWidth || this._borderWidth;
+    this._padding = config.padding || this._padding;
+    this._progress = config.initialProgress || this.progress;
+    this._backgroundColor = config.backgroundColor || this._backgroundColor;
     this._fluidConfiguration = config.fluidConfiguration;
-    this._showProgress = config.showProgress;
-    this._fontFamily = config.fontFamily;
-    this._fontSize = config.fontSize;
+    this._textColor = config.textColor || this._textColor;
+    this._showProgress = config.showProgress || this._showProgress;
+    this._fontFamily = config.fontFamily || this._fontFamily;
+    this._fontSize = config.fontSize || this._fontSize;
+    this._progressFormatter =
+      config.progressFormatter || this._progressFormatter;
 
     this.calculateDrawingValues();
   }
@@ -212,7 +213,7 @@ class CircularFluidMeter extends BaseMeter {
   }
 
   private drawText(): void {
-    const text = this._progress.toString();
+    const text = this._progressFormatter(this._progress.toString());
 
     this._context.save();
     this._context.font = `${this._fontSize}px ${this._fontFamily}`;
