@@ -57,7 +57,6 @@ class CircularFluidMeter extends BaseMeter {
         color: '#ff0000',
         horizontalSpeed: 45,
         angularSpeed: Math.PI,
-        maxAmplitude: '10%',
         frequency: 40,
         initialHeight: 0
       }
@@ -86,7 +85,7 @@ class CircularFluidMeter extends BaseMeter {
     this._context.arc(
       this._width / 2,
       this._height / 2,
-      this.getMeterRadius() / 2 - this._borderWidth,
+      this.calculateCircleRadius() / 2 - this._borderWidth,
       0,
       Math.PI * 2
     );
@@ -104,63 +103,11 @@ class CircularFluidMeter extends BaseMeter {
   }
 
   private calculateDrawingValues(): void {
-    this._backgroundLayer.waveAmplitude = this.calculateWaveAmplitude(
-      this._backgroundLayerConfiguration
-    );
-    this._backgroundLayer.horizontalSpeed = this.calculateHorizontalSpeed(
-      this._backgroundLayerConfiguration
-    );
-    this._backgroundLayer.waveSpeed = this.calculateWaveSpeed(
-      this._backgroundLayer,
-      this._backgroundLayerConfiguration
-    );
-  }
-
-  private calculateHorizontalSpeed(
-    layerConfiguration: FluidLayerConfiguration
-  ): number {
-    let result = 0;
-    if (typeof layerConfiguration.horizontalSpeed === 'number') {
-      result = layerConfiguration.horizontalSpeed;
-    } else if (typeof layerConfiguration.horizontalSpeed === 'string') {
-      const percentage = parseFloat(layerConfiguration.horizontalSpeed);
-      result = (percentage / 100) * this._width;
-    }
-
-    return result;
-  }
-
-  private calculateWaveAmplitude(
-    layerConfiguration: FluidLayerConfiguration
-  ): number {
-    let result = 0;
-
-    if (typeof layerConfiguration.maxAmplitude == 'number') {
-      result = layerConfiguration.maxAmplitude;
-    } else if (typeof layerConfiguration.maxAmplitude == 'string') {
-      const percentage = parseFloat(layerConfiguration.maxAmplitude);
-      if (this._height > this._width) {
-        result = (percentage / 2 / 100) * (this._width * 0.15 - this._padding);
-      } else {
-        result = (percentage / 2 / 100) * (this._height * 0.15 - this._padding);
-      }
-    }
-    return result;
-  }
-
-  private calculateWaveSpeed(
-    layer: FluidLayer,
-    layerConfiguration: FluidLayerConfiguration
-  ): number {
-    let result = 0;
-    if (typeof layerConfiguration.angularSpeed === 'number') {
-      result = layerConfiguration.angularSpeed;
-    } else if (typeof layerConfiguration.angularSpeed === 'string') {
-      const percentage = parseFloat(layerConfiguration.angularSpeed);
-      result = ((percentage / 100) * layer.waveAmplitude * Math.PI) / 180;
-    }
-
-    return result;
+    this._backgroundLayer.waveAmplitude = this.calculateCircleRadius() * 0.025;
+    this._backgroundLayer.horizontalSpeed =
+      this._backgroundLayerConfiguration.horizontalSpeed;
+    this._backgroundLayer.waveSpeed =
+      this._backgroundLayerConfiguration.angularSpeed;
   }
 
   private drawLayer(
@@ -184,10 +131,12 @@ class CircularFluidMeter extends BaseMeter {
 
     const meterBottom =
       this._height -
-      (this._height - this.getMeterRadius()) / 2 -
+      (this._height - this.calculateCircleRadius()) / 2 -
       this._borderWidth;
     const fluidAmount =
-      (this._progress * (this.getMeterRadius() - this._borderWidth * 2)) / 100;
+      (this._progress *
+        (this.calculateCircleRadius() - this._borderWidth * 2)) /
+      100;
 
     // if (this._progress < fillPercentage) {
     //   currentFillPercentage += 15 * dt;
@@ -229,7 +178,7 @@ class CircularFluidMeter extends BaseMeter {
     this._context.arc(
       this._width / 2,
       this._height / 2,
-      this.getMeterRadius() / 2 - this._borderWidth,
+      this.calculateCircleRadius() / 2 - this._borderWidth,
       0,
       2 * Math.PI
     );
@@ -246,7 +195,7 @@ class CircularFluidMeter extends BaseMeter {
     this._context.arc(
       this._width / 2,
       this._height / 2,
-      this.getMeterRadius() / 2 - this._borderWidth / 2,
+      this.calculateCircleRadius() / 2 - this._borderWidth / 2,
       0,
       2 * Math.PI
     );
@@ -255,7 +204,7 @@ class CircularFluidMeter extends BaseMeter {
     this._context.restore();
   }
 
-  private getMeterRadius(): number {
+  private calculateCircleRadius(): number {
     if (this._width > this._height) {
       return this._height - this._padding;
     } else {

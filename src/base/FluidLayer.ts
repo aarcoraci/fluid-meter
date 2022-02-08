@@ -8,10 +8,9 @@ type FluidLayer = {
 
 type FluidLayerConfiguration = {
   color: string;
-  angularSpeed: number | string;
-  maxAmplitude: number | string;
+  angularSpeed: number;
   frequency: number;
-  horizontalSpeed: number | string;
+  horizontalSpeed: number;
   initialHeight: number;
 };
 
