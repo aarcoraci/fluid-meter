@@ -1,4 +1,5 @@
 import { BaseMeter } from '../base/BaseMeter';
+import { BubblesLayer } from '../base/BubblesLayer';
 import {
   FluidLayer,
   FluidLayerConfiguration,
@@ -22,6 +23,7 @@ type CircularFluidMeterConfig = {
 class CircularFluidMeter extends BaseMeter {
   private _fluidConfiguration: FluidLayerConfiguration;
   private _layers?: [FluidLayer, FluidLayer];
+  private _bubbles = new BubblesLayer();
 
   private _progress = 50;
   public get progress() {
@@ -137,6 +139,7 @@ class CircularFluidMeter extends BaseMeter {
       this.drawLayer(this._layers[0]);
       this.drawLayer(this._layers[1]);
     }
+    this.drawBubbles();
     if (this._showProgress) {
       this.drawText();
     }
@@ -154,6 +157,40 @@ class CircularFluidMeter extends BaseMeter {
     this._layers = FluidLayerHelper.buildFluidLayersFromConfiguration(
       this._fluidConfiguration,
       this.calculateCircleRadius()
+    );
+    // values for the bubble layer
+    const minY = this.getMeterBottomLimit() * 0.85;
+    const maxY = this.getMeterBottomLimit();
+
+    const yThreshold =
+      maxY - this.getFluidLevel() + this._layers[0].waveAmplitude;
+
+    const minX = this._width / 2 - this.calculateCircleRadius();
+    const maxX = this._width / 2 + this.calculateCircleRadius();
+
+    this._bubbles.minY = minY;
+    this._bubbles.maxY = maxY;
+    this._bubbles.minX = minX;
+    this._bubbles.maxX = maxX;
+    this._bubbles.yThreshold = yThreshold;
+    this._bubbles.reset();
+  }
+
+  // bottom limit where fluid gets drawn
+  private getMeterBottomLimit(): number {
+    return (
+      this._height -
+      (this._height - this.calculateCircleRadius()) / 2 -
+      this._borderWidth
+    );
+  }
+
+  // returns the line where the fluit makes waves
+  private getFluidLevel(): number {
+    return (
+      (this._progress *
+        (this.calculateCircleRadius() - this._borderWidth * 2)) /
+      100
     );
   }
 
@@ -173,14 +210,8 @@ class CircularFluidMeter extends BaseMeter {
     let y = 0;
     const amplitude = layer.waveAmplitude * Math.sin(layer.angle);
 
-    const meterBottom =
-      this._height -
-      (this._height - this.calculateCircleRadius()) / 2 -
-      this._borderWidth;
-    const fluidAmount =
-      (this._progress *
-        (this.calculateCircleRadius() - this._borderWidth * 2)) /
-      100;
+    const meterBottom = this.getMeterBottomLimit();
+    const fluidAmount = this.getFluidLevel();
 
     // if (this._progress < fillPercentage) {
     //   currentFillPercentage += 15 * dt;
@@ -200,6 +231,7 @@ class CircularFluidMeter extends BaseMeter {
         initialHeight +
         amplitude * Math.sin((x + layer.horizontalPosition) / layer.frequency);
       this._context.lineTo(x, y);
+
       x++;
     }
 
@@ -243,8 +275,8 @@ class CircularFluidMeter extends BaseMeter {
   }
 
   private drawForeground(): void {
-    this._context.lineWidth = this._borderWidth;
     this._context.save();
+    this._context.lineWidth = this._borderWidth;
     this._context.strokeStyle = '#0000ff';
     this._context.beginPath();
     this._context.arc(
@@ -259,6 +291,30 @@ class CircularFluidMeter extends BaseMeter {
     this._context.restore();
   }
 
+  private drawBubbles() {
+    this._context.save();
+    this._bubbles.bubbles.forEach((bubble) => {
+      bubble.y -= bubble.velY * this._elapsed;
+
+      if (bubble.y <= this._bubbles.yThreshold) {
+        this._bubbles.resetBubble(bubble);
+      }
+
+      this._context.beginPath();
+      this._context.strokeStyle = 'white';
+      this._context.arc(
+        bubble.x - bubble.r / 2,
+        bubble.y - bubble.r / 2,
+        bubble.r,
+        0,
+        2 * Math.PI
+      );
+      this._context.stroke();
+      this._context.closePath();
+    });
+    this._context.restore();
+  }
+
   private calculateCircleRadius(): number {
     if (this._width > this._height) {
       return this._height - this._padding;
@@ -270,6 +326,7 @@ class CircularFluidMeter extends BaseMeter {
   protected override resize(): void {
     super.resize();
     this.calculateDrawingValues();
+    this._bubbles.reset();
   }
 }
 
