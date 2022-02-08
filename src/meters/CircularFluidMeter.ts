@@ -51,13 +51,13 @@ class CircularFluidMeter extends BaseMeter {
     container: HTMLElement,
     config: CircularFluidMeterConfig = {
       borderWidth: 25,
-      padding: 15,
+      padding: 25,
       backgroundColor: '#00ff00',
       backgroundLayer: {
         color: '#ff0000',
-        horizontalSpeed: '199%',
-        angularSpeed: 140,
-        maxAmplitude: '15%',
+        horizontalSpeed: 45,
+        angularSpeed: Math.PI,
+        maxAmplitude: '10%',
         frequency: 40,
         initialHeight: 0
       }
@@ -71,9 +71,10 @@ class CircularFluidMeter extends BaseMeter {
     // init
     this._backgroundLayer = {
       angle: 0,
+      waveSpeed: 0,
       horizontalPosition: 0,
       waveAmplitude: 0,
-      waveSpeed: 0
+      horizontalSpeed: 0
     };
     // calculation
     this.calculateDrawingValues();
@@ -81,8 +82,21 @@ class CircularFluidMeter extends BaseMeter {
 
   protected draw(): void {
     this.clear();
+    this._context.save();
+    this._context.arc(
+      this._width / 2,
+      this._height / 2,
+      this.getMeterRadius() / 2 - this._borderWidth,
+      0,
+      Math.PI * 2
+    );
+    this._context.clip();
     this.drawBackground();
     this.drawLayer(this._backgroundLayer, this._backgroundLayerConfiguration);
+    // clip any "fluid" outside the meter
+    this._context.restore();
+    // can draw in whole canvas again
+    this.drawForeground();
   }
 
   private clear() {
@@ -93,12 +107,16 @@ class CircularFluidMeter extends BaseMeter {
     this._backgroundLayer.waveAmplitude = this.calculateWaveAmplitude(
       this._backgroundLayerConfiguration
     );
+    this._backgroundLayer.horizontalSpeed = this.calculateHorizontalSpeed(
+      this._backgroundLayerConfiguration
+    );
     this._backgroundLayer.waveSpeed = this.calculateWaveSpeed(
+      this._backgroundLayer,
       this._backgroundLayerConfiguration
     );
   }
 
-  private calculateWaveSpeed(
+  private calculateHorizontalSpeed(
     layerConfiguration: FluidLayerConfiguration
   ): number {
     let result = 0;
@@ -122,10 +140,24 @@ class CircularFluidMeter extends BaseMeter {
     } else if (typeof layerConfiguration.maxAmplitude == 'string') {
       const percentage = parseFloat(layerConfiguration.maxAmplitude);
       if (this._height > this._width) {
-        result = (percentage / 2 / 100) * (this._width - this._padding * 2);
+        result = (percentage / 2 / 100) * (this._width * 0.15 - this._padding);
       } else {
-        result = (percentage / 2 / 100) * (this._height - this._padding * 2);
+        result = (percentage / 2 / 100) * (this._height * 0.15 - this._padding);
       }
+    }
+    return result;
+  }
+
+  private calculateWaveSpeed(
+    layer: FluidLayer,
+    layerConfiguration: FluidLayerConfiguration
+  ): number {
+    let result = 0;
+    if (typeof layerConfiguration.angularSpeed === 'number') {
+      result = layerConfiguration.angularSpeed;
+    } else if (typeof layerConfiguration.angularSpeed === 'string') {
+      const percentage = parseFloat(layerConfiguration.angularSpeed);
+      result = ((percentage / 100) * layer.waveAmplitude * Math.PI) / 180;
     }
 
     return result;
@@ -136,26 +168,19 @@ class CircularFluidMeter extends BaseMeter {
     layerConfiguration: FluidLayerConfiguration
   ) {
     // calculate wave angle
-    if (layerConfiguration.angularSpeed > 0) {
-      layer.angle += layerConfiguration.angularSpeed * this._elapsed;
-      layer.angle = layer.angle < 0 ? layer.angle + 360 : layer.angle;
+    let angle = layer.angle + layer.waveSpeed * this._elapsed;
+    if (angle > Math.PI * 2) {
+      angle = angle - Math.PI * 2;
     }
 
+    layer.angle = angle;
+
     // calculate horizontal position
-    layer.horizontalPosition += layer.waveSpeed * this._elapsed;
-    // if (layer.horizontalSpeed > 0) {
-    //   horizontalPosition =
-    //     horizontalPosition > Math.pow(2, 53) ? 0 : horizontalPosition;
-    // } else if (horizontalPosition < 0) {
-    //   layer.horizontalPosition < -1 * Math.pow(2, 53)
-    //     ? 0
-    //     : layer.horizontalPosition;
-    // }
+    layer.horizontalPosition += layer.horizontalSpeed * this._elapsed;
 
     let x = 0;
     let y = 0;
-    const amplitude =
-      layer.waveAmplitude * Math.sin((layer.angle * Math.PI) / 180);
+    const amplitude = layer.waveAmplitude * Math.sin(layer.angle);
 
     const meterBottom =
       this._height -
@@ -210,6 +235,23 @@ class CircularFluidMeter extends BaseMeter {
     );
     this._context.closePath();
     this._context.fill();
+    this._context.restore();
+  }
+
+  private drawForeground(): void {
+    this._context.lineWidth = this._borderWidth;
+    this._context.save();
+    this._context.strokeStyle = '#0000ff';
+    this._context.beginPath();
+    this._context.arc(
+      this._width / 2,
+      this._height / 2,
+      this.getMeterRadius() / 2 - this._borderWidth / 2,
+      0,
+      2 * Math.PI
+    );
+    this._context.closePath();
+    this._context.stroke();
     this._context.restore();
   }
 
