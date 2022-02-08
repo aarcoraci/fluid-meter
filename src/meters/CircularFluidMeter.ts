@@ -6,6 +6,7 @@ import {
   FluidLayerHelper,
   Speed
 } from '../base/FluidLayer';
+import { ColorUtils } from '../utils/ColorUtils';
 
 type CircularFluidMeterConfig = {
   initialProgress?: number;
@@ -18,7 +19,27 @@ type CircularFluidMeterConfig = {
   fluidConfiguration: FluidLayerConfiguration;
   fontFamily?: string;
   fontSize?: number;
+  use3D?: boolean;
   progressFormatter?: (value: string) => string;
+};
+
+const defaultConfig: Required<CircularFluidMeterConfig> = {
+  initialProgress: 33,
+  borderWidth: 25,
+  padding: 15,
+  backgroundColor: '#c3c3c3',
+  showProgress: true,
+  showBubbles: true,
+  textColor: '#ffffff',
+  fontFamily: 'Arial',
+  fontSize: 55,
+  use3D: true,
+  progressFormatter: (value: string) => value,
+  fluidConfiguration: {
+    color: '#ff0000',
+    waveSpeed: Speed.FAST,
+    horizontalSpeed: Speed.NORMAL
+  }
 };
 
 class CircularFluidMeter extends BaseMeter {
@@ -52,7 +73,7 @@ class CircularFluidMeter extends BaseMeter {
     this.calculateDrawingValues();
   }
 
-  private _backgroundColor = '#c9c9c9';
+  private _backgroundColor = '#ff00ff';
   public get backgroundColor() {
     return this._backgroundColor;
   }
@@ -100,35 +121,38 @@ class CircularFluidMeter extends BaseMeter {
     this._showBubbles = show;
   }
 
+  private _use3D = true;
+  public get use3D() {
+    return this._use3D;
+  }
+  public set use3D(show: boolean) {
+    this._use3D = show;
+  }
+
   private _progressFormatter = (value: string): string => `${value}%`;
   public setProgressFormatter(formatter: (value: string) => string) {
     this._progressFormatter = formatter;
   }
 
-  constructor(
-    container: HTMLElement,
-    config: CircularFluidMeterConfig = {
-      fontSize: 100,
-      fluidConfiguration: {
-        color: '#ff0000',
-        waveSpeed: Speed.FAST,
-        horizontalSpeed: Speed.NORMAL
-      }
-    }
-  ) {
+  constructor(container: HTMLElement, config: CircularFluidMeterConfig) {
     super(container);
-    this._borderWidth = config.borderWidth || this._borderWidth;
-    this._padding = config.padding || this._padding;
-    this._progress = config.initialProgress || this.progress;
-    this._backgroundColor = config.backgroundColor || this._backgroundColor;
-    this._fluidConfiguration = config.fluidConfiguration;
-    this._textColor = config.textColor || this._textColor;
-    this._showProgress = config.showProgress || this._showProgress;
-    this._fontFamily = config.fontFamily || this._fontFamily;
-    this._fontSize = config.fontSize || this._fontSize;
-    this._showBubbles = config.showBubbles || this._showBubbles;
-    this._progressFormatter =
-      config.progressFormatter || this._progressFormatter;
+    const computedConfig: Required<CircularFluidMeterConfig> = {
+      ...defaultConfig,
+      ...config
+    };
+
+    this._borderWidth = computedConfig.borderWidth;
+    this._padding = computedConfig.padding;
+    this._progress = computedConfig.initialProgress;
+    this._backgroundColor = computedConfig.backgroundColor;
+    this._fluidConfiguration = computedConfig.fluidConfiguration;
+    this._textColor = computedConfig.textColor;
+    this._showProgress = computedConfig.showProgress;
+    this._fontFamily = computedConfig.fontFamily;
+    this._fontSize = computedConfig.fontSize;
+    this._showBubbles = computedConfig.showBubbles;
+    this._use3D = computedConfig.use3D;
+    this._progressFormatter = computedConfig.progressFormatter;
 
     this.calculateDrawingValues();
   }
@@ -276,7 +300,9 @@ class CircularFluidMeter extends BaseMeter {
 
   private drawBackground(): void {
     this._context.save();
-    this._context.fillStyle = this.backgroundColor;
+
+    const meterRadius = this.calculateCircleRadius();
+
     this._context.beginPath();
     this._context.arc(
       this._width / 2,
@@ -286,6 +312,32 @@ class CircularFluidMeter extends BaseMeter {
       2 * Math.PI
     );
     this._context.closePath();
+
+    if (this._use3D) {
+      const x1 = this._width / 2;
+      const y1 = this._height / 2;
+      const r1 = meterRadius * 0.1;
+      const grd = this._context.createRadialGradient(
+        x1,
+        y1,
+        r1,
+        x1,
+        y1,
+        meterRadius
+      );
+      const startColor = this._backgroundColor;
+      const endColor = ColorUtils.pSBC(-0.8, this.backgroundColor);
+
+      grd.addColorStop(0, startColor);
+      if (endColor) {
+        grd.addColorStop(1, endColor);
+      }
+      this._context.fillStyle = grd;
+    } else {
+      this._context.fillStyle = this.backgroundColor;
+      this._context.fill();
+    }
+
     this._context.fill();
     this._context.restore();
   }
@@ -307,18 +359,33 @@ class CircularFluidMeter extends BaseMeter {
     this._context.stroke();
     this._context.restore();
 
-    // blur
-    this._context.save();
-    this._context.filter = 'blur(10px) blur(15px) opacity(0.65)';
-    const x = this._width / 2 - this._width / 6;
-    const y = this._height / 2 - this._height / 6;
-    const size = meterRadius * 0.095;
-    this._context.fillStyle = 'white';
-    this._context.beginPath();
-    this._context.arc(x, y, size, 0, 2 * Math.PI);
-    this._context.closePath();
-    this._context.fill();
-    this._context.restore();
+    // details
+
+    if (this._use3D) {
+      this._context.save();
+      this._context.filter = 'blur(10px) blur(15px) opacity(0.65)';
+      let x = this._width / 2 - this._width / 6;
+      let y = this._height / 2 - this._height / 6;
+      let size = meterRadius * 0.095;
+      this._context.fillStyle = 'white';
+      this._context.beginPath();
+      this._context.arc(x, y, size, 0, 2 * Math.PI);
+      this._context.closePath();
+      this._context.fill();
+      this._context.restore();
+
+      this._context.save();
+      this._context.filter = 'blur(8px)  opacity(0.39)';
+      x = this._width / 2 + this._width / 4.3;
+      y = this._height / 2 + this._height / 4.3;
+      size = meterRadius * 0.045;
+      this._context.fillStyle = 'white';
+      this._context.beginPath();
+      this._context.arc(x, y, size, 0, 2 * Math.PI);
+      this._context.closePath();
+      this._context.fill();
+      this._context.restore();
+    }
   }
 
   private drawBubbles() {
