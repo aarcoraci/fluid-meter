@@ -17,9 +17,9 @@ type FluidLayerConfiguration = {
 };
 
 enum Speed {
-  NORMAL,
-  FAST,
-  SLOW
+  SLOW = 0,
+  NORMAL = 1,
+  FAST = 2
 }
 
 abstract class FluidLayerSettings {

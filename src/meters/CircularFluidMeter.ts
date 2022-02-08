@@ -63,7 +63,7 @@ class CircularFluidMeter extends BaseMeter {
         waveSpeed: Speed.FAST,
         horizontalSpeed: Speed.NORMAL
       },
-      initialProgress: 15
+      initialProgress: 45
     }
   ) {
     super(container);
