@@ -364,8 +364,8 @@ class CircularFluidMeter extends BaseMeter {
     if (this._use3D) {
       this._context.save();
       this._context.filter = 'blur(10px) blur(15px) opacity(0.65)';
-      let x = this._width / 2 - this._width / 6;
-      let y = this._height / 2 - this._height / 6;
+      let x = this._width / 2 - meterRadius / 6;
+      let y = this._height / 2 - meterRadius / 6;
       let size = meterRadius * 0.095;
       this._context.fillStyle = 'white';
       this._context.beginPath();
@@ -376,8 +376,8 @@ class CircularFluidMeter extends BaseMeter {
 
       this._context.save();
       this._context.filter = 'blur(8px)  opacity(0.39)';
-      x = this._width / 2 + this._width / 4.3;
-      y = this._height / 2 + this._height / 4.3;
+      x = this._width / 2 + meterRadius / 4.3;
+      y = this._height / 2 + meterRadius / 4.3;
       size = meterRadius * 0.045;
       this._context.fillStyle = 'white';
       this._context.beginPath();
