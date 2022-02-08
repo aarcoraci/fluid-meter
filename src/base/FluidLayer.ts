@@ -1,3 +1,5 @@
+import { ColorUtils } from '../utils/ColorUtils';
+
 type FluidLayer = {
   waveAmplitude: number;
   waveSpeed: number;
@@ -10,31 +12,89 @@ type FluidLayer = {
 
 type FluidLayerConfiguration = {
   color: string;
-  angularSpeed: number;
-  frequency: number;
-  horizontalSpeed: number;
+  waveSpeed: Speed;
+  horizontalSpeed: Speed;
 };
 
+enum Speed {
+  NORMAL,
+  FAST,
+  SLOW
+}
+
+abstract class FluidLayerSettings {
+  static readonly ANGULAR_SPEED_NORMAL = Math.PI / 2;
+  static readonly ANGULAR_SPEED_FAST = Math.PI;
+  static readonly ANGULAR_SPEED_SLOW = Math.PI / 4;
+
+  static readonly FREQUENCY_NORMAL = 55;
+
+  static readonly HORIZONTAL_SPEED_NORMAL = 55;
+  static readonly HORIZONTAL_SPEED_FAST = 155;
+  static readonly HORIZONTAL_SPEED_SLOW = 25;
+}
+
 abstract class FluidLayerHelper {
-  static buildFluidLayerFromConfiguration(
+  static buildFluidLayersFromConfiguration(
     configuration: FluidLayerConfiguration,
     meterRadius: number
-  ): FluidLayer {
-    const result: FluidLayer = {
+  ): [FluidLayer, FluidLayer] {
+    // determine values
+    let waveSpeed = FluidLayerSettings.ANGULAR_SPEED_NORMAL;
+    let horizontalSpeed = FluidLayerSettings.HORIZONTAL_SPEED_NORMAL;
+    const frequency = FluidLayerSettings.FREQUENCY_NORMAL;
+
+    switch (configuration.horizontalSpeed) {
+      case Speed.FAST:
+        horizontalSpeed = FluidLayerSettings.HORIZONTAL_SPEED_FAST;
+        break;
+      case Speed.SLOW:
+        horizontalSpeed = FluidLayerSettings.HORIZONTAL_SPEED_SLOW;
+        break;
+      default:
+        horizontalSpeed = FluidLayerSettings.HORIZONTAL_SPEED_NORMAL;
+        break;
+    }
+
+    switch (configuration.waveSpeed) {
+      case Speed.FAST:
+        waveSpeed = FluidLayerSettings.ANGULAR_SPEED_FAST;
+        break;
+      case Speed.SLOW:
+        waveSpeed = FluidLayerSettings.ANGULAR_SPEED_SLOW;
+        break;
+      default:
+        waveSpeed = FluidLayerSettings.ANGULAR_SPEED_NORMAL;
+        break;
+    }
+
+    const backgroundColor = ColorUtils.pSBC(-0.4, configuration.color);
+
+    const foreGroundLayer: FluidLayer = {
       angle: 0,
       horizontalPosition: 0,
       color: configuration.color,
-      frequency: configuration.frequency,
+      frequency: frequency,
       waveAmplitude: this.calculateWaveAmplitude(meterRadius),
-      horizontalSpeed: configuration.horizontalSpeed,
-      waveSpeed: configuration.angularSpeed
+      horizontalSpeed: horizontalSpeed,
+      waveSpeed: waveSpeed
     };
-    return result;
+
+    const backgroundLayer: FluidLayer = {
+      angle: 0,
+      horizontalPosition: 0,
+      color: backgroundColor ? backgroundColor : configuration.color,
+      frequency: frequency,
+      waveAmplitude: this.calculateWaveAmplitude(meterRadius),
+      horizontalSpeed: -horizontalSpeed,
+      waveSpeed: waveSpeed
+    };
+    return [backgroundLayer, foreGroundLayer];
   }
 
   private static calculateWaveAmplitude(meterRadius: number): number {
-    return meterRadius * 0.025;
+    return meterRadius * 0.021;
   }
 }
 
-export { FluidLayer, FluidLayerConfiguration, FluidLayerHelper };
+export { FluidLayer, FluidLayerConfiguration, FluidLayerHelper, Speed };

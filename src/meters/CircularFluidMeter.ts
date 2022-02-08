@@ -2,23 +2,21 @@ import { BaseMeter } from '../base/BaseMeter';
 import {
   FluidLayer,
   FluidLayerConfiguration,
-  FluidLayerHelper
+  FluidLayerHelper,
+  Speed
 } from '../base/FluidLayer';
 
 type CircularFluidMeterConfig = {
+  initialProgress: number;
   borderWidth: number;
   padding: number;
   backgroundColor: string;
-  backgroundLayerConfiguration: FluidLayerConfiguration;
-  foregroundLayerConfiguration: FluidLayerConfiguration;
+  fluidConfiguration: FluidLayerConfiguration;
 };
 
 class CircularFluidMeter extends BaseMeter {
-  private _backgroundLayer?: FluidLayer;
-  private _foregroundLayer?: FluidLayer;
-  private _backgroundLayerConfiguration: FluidLayerConfiguration;
-  private _foregroundLayerConfiguration: FluidLayerConfiguration;
-  // protected _foregroundLayer: FluidLayer;
+  private _fluidConfiguration: FluidLayerConfiguration;
+  private _layers?: [FluidLayer, FluidLayer];
 
   private _progress = 50;
   public get progress() {
@@ -60,26 +58,20 @@ class CircularFluidMeter extends BaseMeter {
       borderWidth: 25,
       padding: 25,
       backgroundColor: '#00fff0',
-      backgroundLayerConfiguration: {
+      fluidConfiguration: {
         color: '#ff0000',
-        horizontalSpeed: 45,
-        angularSpeed: Math.PI,
-        frequency: 30
+        waveSpeed: Speed.FAST,
+        horizontalSpeed: Speed.NORMAL
       },
-      foregroundLayerConfiguration: {
-        color: '#00ff00',
-        horizontalSpeed: -45,
-        angularSpeed: Math.PI,
-        frequency: 30
-      }
+      initialProgress: 15
     }
   ) {
     super(container);
     this._borderWidth = config.borderWidth;
     this._padding = config.padding;
+    this._progress = config.initialProgress;
     this._backgroundColor = config.backgroundColor;
-    this._backgroundLayerConfiguration = config.backgroundLayerConfiguration;
-    this._foregroundLayerConfiguration = config.foregroundLayerConfiguration;
+    this._fluidConfiguration = config.fluidConfiguration;
 
     this.calculateDrawingValues();
   }
@@ -96,11 +88,9 @@ class CircularFluidMeter extends BaseMeter {
     );
     this._context.clip();
     this.drawBackground();
-    if (this._backgroundLayer) {
-      this.drawLayer(this._backgroundLayer);
-    }
-    if (this._foregroundLayer) {
-      this.drawLayer(this._foregroundLayer);
+    if (this._layers) {
+      this.drawLayer(this._layers[0]);
+      this.drawLayer(this._layers[1]);
     }
     // clip any "fluid" outside the meter
     this._context.restore();
@@ -113,12 +103,8 @@ class CircularFluidMeter extends BaseMeter {
   }
 
   private calculateDrawingValues(): void {
-    this._backgroundLayer = FluidLayerHelper.buildFluidLayerFromConfiguration(
-      this._backgroundLayerConfiguration,
-      this.calculateCircleRadius()
-    );
-    this._foregroundLayer = FluidLayerHelper.buildFluidLayerFromConfiguration(
-      this._foregroundLayerConfiguration,
+    this._layers = FluidLayerHelper.buildFluidLayersFromConfiguration(
+      this._fluidConfiguration,
       this.calculateCircleRadius()
     );
   }
