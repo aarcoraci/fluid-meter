@@ -14,6 +14,7 @@ configurations.push({
   borderColor: '#3e4954',
   bubbleColor: '#6bcfff',
   fontSize: 60,
+
   fluidConfiguration: {
     color: '#1e90ff'
   }
@@ -21,8 +22,13 @@ configurations.push({
 
 configurations.push({
   borderColor: '#567656',
-  initialProgress: 33,
+  initialProgress: 45,
   backgroundColor: '#2d3d2d',
+  textColor: '#80cd32',
+  fontFamily: 'Creepster',
+  progressFormatter: (value) => {
+    return value > 50 ? value.toFixed(1) + '!' : value.toFixed(1);
+  },
   fluidConfiguration: {
     color: '#adff2f',
     horizontalSpeed: Speed.FAST,
@@ -83,17 +89,14 @@ configurations.push({
 
 configurations.push({
   borderWidth: 22,
-  initialProgress: 23.2,
+  initialProgress: 62,
   padding: 50,
   backgroundColor: '#208000',
   borderColor: '#800060',
-  fontSize: 60,
+  showProgress: false,
   showBubbles: false,
   dropShadow: false,
   use3D: false,
-  progressFormatter: (value) => {
-    return value.toFixed(1) + '%';
-  },
   fluidConfiguration: {
     color: '#f8f8ff'
   }
