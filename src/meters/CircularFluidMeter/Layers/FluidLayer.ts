@@ -40,7 +40,7 @@ abstract class FluidLayerHelper {
     // determine values
     let waveSpeed = FluidLayerSettings.ANGULAR_SPEED_NORMAL;
     let horizontalSpeed = FluidLayerSettings.HORIZONTAL_SPEED_NORMAL;
-    const frequency = meterRadius / 11;
+    const frequency = this.calculateFrequency(meterRadius);
 
     switch (configuration.horizontalSpeed) {
       case Speed.FAST:
@@ -93,6 +93,9 @@ abstract class FluidLayerHelper {
 
   private static calculateWaveAmplitude(meterRadius: number): number {
     return meterRadius * 0.021;
+  }
+  private static calculateFrequency(meterRadius: number): number {
+    return meterRadius / 11;
   }
 }
 

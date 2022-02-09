@@ -249,6 +249,8 @@ class CircularFluidMeter extends BaseMeter {
     this._bubbles.maxX = maxX;
     this._bubbles.yThreshold = yThreshold;
     this._bubbles.averageSize = this._meterRadius * 0.01;
+    this._bubbles.averageSpeed = (this._meterRadius * 2) / 10; // should take X seconds to go from bottom to top
+    this._bubbles.speedDeviation = this._bubbles.averageSpeed * 0.25;
     this._bubbles.reset();
   }
 
