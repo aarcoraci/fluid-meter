@@ -1,15 +1,55 @@
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  width: 50vw;
-  height: 500px;
 }
 
 html,
 body {
   padding: 0;
   margin: 0;
+}
+
+.meters {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.meter-container {
+  margin-right: 50px;
+}
+
+.meter-container .meter {
+  width: 400px;
+  height: 400px;
+}
+.meter-container .controls {
+  padding: 9px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.meter-container .controls :first-child {
+  margin-right: 15px;
+}
+
+.meter-container input[type='number'] {
+  padding: 4px 6px;
+  font-size: 18px;
+  color: #2c3e50;
+  border-color: #2c3e50;
+  border-radius: 6px;
+  border-width: 1px;
+}
+
+.meter-container button {
+  background-color: #2c3e50;
+  color: #ffffff;
+  padding: 4px 19px;
+  cursor: pointer;
+  border-radius: 6px;
+  letter-spacing: 1px;
+  font-size: 16px;
 }

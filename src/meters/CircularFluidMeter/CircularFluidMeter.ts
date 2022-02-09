@@ -215,7 +215,9 @@ class CircularFluidMeter extends BaseMeter {
       this.drawLayer(this._layers[0], false);
       this.drawLayer(this._layers[1]);
     }
-    this.drawBubbles();
+    if (this._showBubbles) {
+      this.drawBubbles();
+    }
     if (this._showProgress) {
       this.drawText();
     }

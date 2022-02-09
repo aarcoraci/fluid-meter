@@ -21,7 +21,7 @@ type CircularFluidMeterConfig = {
 };
 
 const defaultConfig: Required<CircularFluidMeterConfig> = {
-  initialProgress: 33,
+  initialProgress: 0,
   borderWidth: [
     { resolution: 0, value: 10 },
     { resolution: 768, value: 15 },
@@ -32,7 +32,7 @@ const defaultConfig: Required<CircularFluidMeterConfig> = {
   backgroundColor: '#9f9fae',
   showProgress: true,
   showBubbles: true,
-  bubbleColor: '#ffb0b0',
+  bubbleColor: '#ffffff',
   textColor: '#ffffff',
   textDropShadow: true,
   fontFamily: 'Arial',

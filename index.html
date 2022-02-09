@@ -9,11 +9,27 @@
 </head>
 
 <body>
-  <div id="app"></div>
-  <div>
-    <button id="update-button-1">update percentage</button>
-    <button id="update-button-2">update percentage</button>
+  <div class="meters">
+    <div class="meter-container">
+      <div id="meter-1" class="meter"></div>
+      <div class="controls">
+        <input type="number" placeholder="set progress"><button>set</button>
+      </div>
+    </div>
+    <div class="meter-container">
+      <div id="meter-2" class="meter"></div>
+      <div class="controls">
+        <input type="number" placeholder="set progress"><button>set</button>
+      </div>
+    </div>
+    <div class="meter-container">
+      <div id="meter-3" class="meter"></div>
+      <div class="controls">
+        <input type="number" placeholder="set progress"><button>set</button>
+      </div>
+    </div>
   </div>
+
   <script type="module" src="/src/main.ts"></script>
 </body>
 
