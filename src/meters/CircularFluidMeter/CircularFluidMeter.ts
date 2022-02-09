@@ -81,6 +81,14 @@ class CircularFluidMeter extends BaseMeter {
     this._fontSize = size;
   }
 
+  private _textDropShadow = true;
+  public get textDropShadow() {
+    return this._textDropShadow;
+  }
+  public set textDropShadow(dropShadow: boolean) {
+    this._textDropShadow = dropShadow;
+  }
+
   private _showProgress = true;
   public get showProgress() {
     return this._showProgress;
@@ -139,6 +147,7 @@ class CircularFluidMeter extends BaseMeter {
     this._backgroundColor = computedConfig.backgroundColor;
     this._fluidConfiguration = computedConfig.fluidConfiguration;
     this._textColor = computedConfig.textColor;
+    this._textDropShadow = computedConfig.textDropShadow;
     this._showProgress = computedConfig.showProgress;
     this._fontFamily = computedConfig.fontFamily;
     this._fontSize = computedConfig.fontSize;
@@ -180,7 +189,7 @@ class CircularFluidMeter extends BaseMeter {
     this._context.clip();
     this.drawBackground();
     if (this._layers) {
-      this.drawLayer(this._layers[0]);
+      this.drawLayer(this._layers[0], false);
       this.drawLayer(this._layers[1]);
     }
     this.drawBubbles();
@@ -249,7 +258,7 @@ class CircularFluidMeter extends BaseMeter {
     this._bubbles.maxX = maxX;
     this._bubbles.yThreshold = yThreshold;
     this._bubbles.averageSize = this._meterRadius * 0.01;
-    this._bubbles.averageSpeed = (this._meterRadius * 2) / 10; // should take X seconds to go from bottom to top
+    this._bubbles.averageSpeed = (this._meterRadius * 2) / 14; // should take X seconds to go from bottom to top
     this._bubbles.speedDeviation = this._bubbles.averageSpeed * 0.25;
     this._bubbles.reset();
   }
@@ -271,7 +280,7 @@ class CircularFluidMeter extends BaseMeter {
     );
   }
 
-  private drawLayer(layer: FluidLayer) {
+  private drawLayer(layer: FluidLayer, canUse3d = true) {
     // calculate wave angle
     let angle = layer.angle + layer.waveSpeed * this._elapsed;
     if (angle > Math.PI * 2) {
@@ -316,7 +325,30 @@ class CircularFluidMeter extends BaseMeter {
     this._context.lineTo(0, this._height);
     this._context.closePath();
 
-    this._context.fillStyle = layer.color;
+    if (this._use3D && canUse3d) {
+      const x1 = this._width / 2;
+      const y1 = meterBottom;
+      const r1 = this._meterRadius * 0.01;
+      const gradientBackgroundFill = this._context.createRadialGradient(
+        x1,
+        y1,
+        r1,
+        x1,
+        y1,
+        this._meterRadius
+      );
+      const startColor = layer.color;
+      const endColor = ColorUtils.pSBC(-0.8, layer.color);
+
+      gradientBackgroundFill.addColorStop(0, startColor);
+      if (endColor) {
+        gradientBackgroundFill.addColorStop(1, endColor);
+      }
+      this._context.fillStyle = gradientBackgroundFill;
+    } else {
+      this._context.fillStyle = layer.color;
+    }
+
     this._context.fill();
     this._context.restore();
   }
@@ -330,7 +362,9 @@ class CircularFluidMeter extends BaseMeter {
     this._context.fillStyle = this._textColor;
     this._context.textAlign = 'center';
     this._context.textBaseline = 'middle';
-    this._context.filter = 'drop-shadow(0px 0px 5px rgba(0,0,0,0.4))';
+    if (this._textDropShadow) {
+      this._context.filter = 'drop-shadow(0px 0px 5px rgba(0,0,0,0.4))';
+    }
     this._context.fillText(text, this._width / 2, this._height / 2);
     this._context.restore();
   }
@@ -351,7 +385,7 @@ class CircularFluidMeter extends BaseMeter {
       const x1 = this._width / 2;
       const y1 = this._height / 2;
       const r1 = this._meterRadius * 0.1;
-      const grd = this._context.createRadialGradient(
+      const gradientBackgroundFill = this._context.createRadialGradient(
         x1,
         y1,
         r1,
@@ -362,11 +396,11 @@ class CircularFluidMeter extends BaseMeter {
       const startColor = this._backgroundColor;
       const endColor = ColorUtils.pSBC(-0.8, this.backgroundColor);
 
-      grd.addColorStop(0, startColor);
+      gradientBackgroundFill.addColorStop(0, startColor);
       if (endColor) {
-        grd.addColorStop(1, endColor);
+        gradientBackgroundFill.addColorStop(1, endColor);
       }
-      this._context.fillStyle = grd;
+      this._context.fillStyle = gradientBackgroundFill;
     } else {
       this._context.fillStyle = this.backgroundColor;
       this._context.fill();

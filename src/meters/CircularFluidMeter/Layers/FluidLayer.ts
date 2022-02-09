@@ -66,7 +66,7 @@ abstract class FluidLayerHelper {
         break;
     }
 
-    const backgroundColor = ColorUtils.pSBC(-0.4, configuration.color);
+    const backgroundColor = ColorUtils.pSBC(-0.75, configuration.color);
     const waveAmplitude = this.calculateWaveAmplitude(meterRadius);
 
     const foreGroundLayer: FluidLayer = {

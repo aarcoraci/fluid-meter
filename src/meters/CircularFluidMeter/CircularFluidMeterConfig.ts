@@ -10,6 +10,7 @@ type CircularFluidMeterConfig = {
   showBubbles?: boolean;
   bubbleColor?: string;
   textColor?: string;
+  textDropShadow?: boolean;
   fluidConfiguration: FluidLayerConfiguration;
   fontFamily?: string;
   fontSize?: number | BreakpointValueConfig[];
@@ -31,12 +32,13 @@ const defaultConfig: Required<CircularFluidMeterConfig> = {
   showBubbles: true,
   bubbleColor: '#ffffff',
   textColor: '#ffffff',
+  textDropShadow: true,
   fontFamily: 'Arial',
   fontSize: [
     { resolution: 0, value: 13 },
     { resolution: 320, value: 30 },
-    { resolution: 718, value: 120 },
-    { resolution: 1440, value: 150 }
+    { resolution: 718, value: 90 },
+    { resolution: 1440, value: 95 }
   ],
   use3D: true,
   dropShadow: true,
