@@ -27,9 +27,9 @@ const defaultConfig: Required<CircularFluidMeterConfig> = {
     { resolution: 768, value: 15 },
     { resolution: 1440, value: 30 }
   ],
-  borderColor: '#0000ff',
+  borderColor: '#75758b',
   padding: 30,
-  backgroundColor: '#c3c3c3',
+  backgroundColor: '#9f9fae',
   showProgress: true,
   showBubbles: true,
   bubbleColor: '#ffffff',

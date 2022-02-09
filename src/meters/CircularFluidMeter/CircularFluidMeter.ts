@@ -27,7 +27,6 @@ class CircularFluidMeter extends BaseMeter {
   }
   public set targetProgress(value: number) {
     this._targetProgress = value;
-    this.updateBubbleLayer();
   }
 
   private _progress: number;
@@ -197,6 +196,9 @@ class CircularFluidMeter extends BaseMeter {
       this._context.restore();
     }
 
+    this.drawBackground();
+
+    // #region clip
     this._context.save();
     this._context.arc(
       this._width / 2,
@@ -206,7 +208,8 @@ class CircularFluidMeter extends BaseMeter {
       Math.PI * 2
     );
     this._context.clip();
-    this.drawBackground();
+    // #endregion
+
     if (this._layers) {
       this.drawLayer(this._layers[0], false);
       this.drawLayer(this._layers[1]);
@@ -215,8 +218,10 @@ class CircularFluidMeter extends BaseMeter {
     if (this._showProgress) {
       this.drawText();
     }
-    // clip any "fluid" outside the meter
+
+    // restore clip
     this._context.restore();
+
     // can draw in whole canvas again
     this.drawForeground();
   }
@@ -276,8 +281,8 @@ class CircularFluidMeter extends BaseMeter {
     }
     const maxY = meterBottomLimit;
 
-    const minX = this._width / 2 - this._meterDiameter;
-    const maxX = this._width / 2 + this._meterDiameter;
+    const minX = this._width / 2 - this._meterDiameter / 2;
+    const maxX = this._width / 2 + this._meterDiameter / 2;
 
     this._bubbles.minY = minY;
     this._bubbles.maxY = maxY;
@@ -355,7 +360,7 @@ class CircularFluidMeter extends BaseMeter {
         r1,
         x1,
         y1,
-        this._meterDiameter
+        this._meterDiameter * 0.45
       );
       const startColor = layer.color;
       const endColor = ColorUtils.pSBC(-0.8, layer.color);
@@ -411,14 +416,14 @@ class CircularFluidMeter extends BaseMeter {
         r1,
         x1,
         y1,
-        this._meterDiameter
+        this._meterDiameter * 0.75
       );
       const startColor = this._backgroundColor;
       const endColor = ColorUtils.pSBC(-0.8, this.backgroundColor);
 
       gradientBackgroundFill.addColorStop(0, startColor);
       if (endColor) {
-        gradientBackgroundFill.addColorStop(1, endColor);
+        gradientBackgroundFill.addColorStop(0.9, endColor);
       }
       this._context.fillStyle = gradientBackgroundFill;
     } else {
