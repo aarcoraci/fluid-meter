@@ -28,6 +28,9 @@ class CircularFluidMeter extends BaseMeter {
     return this._progress;
   }
   public set progress(value: number) {
+    if (value > 100 || value < 0) {
+      return;
+    }
     this._targetProgress = value;
   }
 

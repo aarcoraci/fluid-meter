@@ -119,9 +119,11 @@ configurations.forEach((configuration) => {
         if (progress) {
             if (isNaN(progress)) {
                 alert('invalid progress. Number between 0 and 100');
+                return;
             }
             if (progress < 0 || progress > 100) {
                 alert('invalid progress. Number between 0 and 100');
+                return;
             }
             meter.progress = progress;
         }
