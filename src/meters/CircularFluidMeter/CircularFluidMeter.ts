@@ -188,7 +188,7 @@ class CircularFluidMeter extends BaseMeter {
       this._context.arc(
         this._width / 2,
         this._height / 2,
-        this._meterDiameter / 2,
+        this._meterDiameter / 2 - 1,
         0,
         2 * Math.PI
       );
@@ -454,13 +454,16 @@ class CircularFluidMeter extends BaseMeter {
 
     // inner border
     const innerBorderColor = ColorUtils.pSBC(-0.35, this._borderColor);
-    this._context.lineWidth = this._calculatedBorderWidth * 0.25;
+    const innerBorderWidth = this._calculatedBorderWidth * 0.25;
+    this._context.lineWidth = innerBorderWidth;
     this._context.strokeStyle = innerBorderColor || this._borderColor;
     this._context.beginPath();
     this._context.arc(
       this._width / 2,
       this._height / 2,
-      this._meterDiameter / 2 - this._calculatedBorderWidth * 0.85,
+      this._meterDiameter / 2 -
+        this._calculatedBorderWidth * 0.85 -
+        innerBorderWidth / 2,
       0,
       2 * Math.PI
     );

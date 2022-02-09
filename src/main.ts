@@ -47,18 +47,41 @@ configurations.push({
   }
 });
 
-const meterContainerElements =
-  document.querySelectorAll<HTMLDivElement>('.meter-container');
+configurations.push({
+  initialProgress: 25,
+  borderColor: '#dadada',
+  backgroundColor: '#dadada',
+  showBubbles: true,
+  borderWidth: 22,
+  fontSize: 65,
+  fluidConfiguration: {
+    color: '#800080'
+  }
+});
 
-let i = 0;
-meterContainerElements.forEach((currentMeterContainer) => {
-  const meterHTMLElement =
-    currentMeterContainer.querySelector<HTMLDivElement>('.meter')!;
-  const meter = new CircularFluidMeter(meterHTMLElement, configurations[i]);
-  // controls
-  const input = currentMeterContainer.querySelector<HTMLInputElement>('input');
-  const button =
-    currentMeterContainer.querySelector<HTMLButtonElement>('button');
+const mainContainer = document.querySelector<HTMLDListElement>('.meters');
+configurations.forEach((configuration) => {
+  // create the DOM elements
+  const meterContainer = <HTMLDivElement>document.createElement('div');
+  meterContainer.classList.add('meter-container');
+
+  mainContainer.appendChild(meterContainer);
+
+  const meterHTMLElement = <HTMLDivElement>document.createElement('div');
+  meterHTMLElement.classList.add('meter');
+
+  meterContainer.appendChild(meterHTMLElement);
+
+  const meter = new CircularFluidMeter(meterHTMLElement, configuration);
+
+  const controlsContainer = <HTMLDivElement>document.createElement('div');
+  controlsContainer.classList.add('controls');
+
+  const input = <HTMLInputElement>document.createElement('input');
+  input.setAttribute('type', 'number');
+  const button = <HTMLButtonElement>document.createElement('button');
+  button.innerHTML = 'set';
+
   button?.addEventListener('click', () => {
     const progress = Number(input?.value);
     if (progress) {
@@ -73,5 +96,9 @@ meterContainerElements.forEach((currentMeterContainer) => {
       meter.targetProgress = progress;
     }
   });
-  i++;
+
+  controlsContainer.appendChild(input);
+  controlsContainer.appendChild(button);
+
+  meterContainer.appendChild(controlsContainer);
 });
