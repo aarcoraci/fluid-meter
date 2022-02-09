@@ -27,8 +27,6 @@ abstract class FluidLayerSettings {
   static readonly ANGULAR_SPEED_FAST = Math.PI;
   static readonly ANGULAR_SPEED_SLOW = Math.PI / 4;
 
-  static readonly FREQUENCY_NORMAL = 55;
-
   static readonly HORIZONTAL_SPEED_NORMAL = 55;
   static readonly HORIZONTAL_SPEED_FAST = 155;
   static readonly HORIZONTAL_SPEED_SLOW = 25;
