@@ -19,7 +19,8 @@ class BubblesLayer {
   getBubble(): BubbleParticle {
     const x = random(this.minX, this.maxX);
     const y = random(this.minY, this.maxY);
-    const r = random(this.averageSize, this.averageSize * 2) / 2;
+    const r = random(this.averageSize * 0.5, this.averageSize * 1.5);
+    const opacity = r < this.averageSize ? 0.5 : 1;
     const velY = random(
       this.averageSpeed - this.speedDeviation,
       this.averageSpeed + this.speedDeviation
@@ -29,7 +30,7 @@ class BubblesLayer {
     const totalDistance = y - this.yThreshold;
     const particleLife = totalDistance / velY;
 
-    return new BubbleParticle(x, y, r, velY, particleLife);
+    return new BubbleParticle(x, y, r, velY, particleLife, opacity);
   }
 
   resetBubble(bubble: BubbleParticle) {
@@ -59,13 +60,21 @@ class BubbleParticle {
   currentOpacity = 1;
   opacityDecayingSpeed = 0;
 
-  constructor(x: number, y: number, r: number, velY: number, lifespan: number) {
+  constructor(
+    x: number,
+    y: number,
+    r: number,
+    velY: number,
+    lifespan: number,
+    opacity = 1
+  ) {
     this.x = x;
     this.y = y;
     this.r = r;
     this.velY = velY;
     this.lifespan = lifespan;
     this.currentLifespan = lifespan;
+    this.currentOpacity = opacity;
     /**
      *  calculate opacity decrease factor base on lifespan:
      * particles will fade out when they reach X% of their life

@@ -13,10 +13,9 @@ const getResponsiveValue = (
 
   const breakPoint = responsiveConfigs
     .filter((c) => c.resolution <= screenWidth)
-    ?.sort(breakPointCompare)
-    ?.at(0);
+    ?.sort(breakPointCompare)?.[0];
   if (!breakPoint) {
-    const minValue = responsiveConfigs.sort(breakPointCompare).reverse().at(0);
+    const minValue = responsiveConfigs.sort(breakPointCompare).reverse()[0];
     return minValue ? minValue.value : 0;
   } else {
     return breakPoint.value;
