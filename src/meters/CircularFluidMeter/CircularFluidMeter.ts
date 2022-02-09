@@ -212,7 +212,7 @@ class CircularFluidMeter extends BaseMeter {
     );
   }
 
-  // returns the line where the fluit makes waves
+  // returns the line where the fluid makes waves
   private getFluidLevel(): number {
     return (
       (this._progress * (this._meterRadius - this._calculatedBorderWidth * 2)) /
