@@ -329,9 +329,15 @@ class CircularFluidMeter extends BaseMeter {
 
     if (this._progress < this._targetProgress) {
       this.progress += 15 * this._elapsed;
+      if (this._progress > this._targetProgress) {
+        this._progress = this._targetProgress;
+      }
       this.updateBubbleLayer();
     } else if (this._progress > this._targetProgress) {
       this.progress -= 15 * this._elapsed;
+      if (this._progress < this._targetProgress) {
+        this._progress = this._targetProgress;
+      }
       this.updateBubbleLayer();
     }
 

@@ -38,7 +38,7 @@ configurations.push({
   borderWidth: 45,
   fontSize: 27,
   progressFormatter: (value) => {
-    return value + '%';
+    return value.toFixed(2) + '%';
   },
   fluidConfiguration: {
     color: '#ff4500',
@@ -53,9 +53,49 @@ configurations.push({
   backgroundColor: '#dadada',
   showBubbles: true,
   borderWidth: 22,
+  dropShadow: false,
+  padding: 0,
   fontSize: 65,
   fluidConfiguration: {
     color: '#800080'
+  }
+});
+
+configurations.push({
+  borderWidth: 22,
+  initialProgress: 23.2,
+  padding: 50,
+  use3D: false,
+  fontFamily: 'Shizuru',
+  backgroundColor: '#002d59',
+  borderColor: '#3e4954',
+  bubbleColor: '#6bcfff',
+  fontSize: 60,
+  progressFormatter: (value) => {
+    return value.toFixed(1) + '%';
+  },
+  fluidConfiguration: {
+    color: '#1e90ff',
+    horizontalSpeed: Speed.FAST,
+    waveSpeed: Speed.FAST
+  }
+});
+
+configurations.push({
+  borderWidth: 22,
+  initialProgress: 23.2,
+  padding: 50,
+  backgroundColor: '#208000',
+  borderColor: '#800060',
+  fontSize: 60,
+  showBubbles: false,
+  dropShadow: false,
+  use3D: false,
+  progressFormatter: (value) => {
+    return value.toFixed(1) + '%';
+  },
+  fluidConfiguration: {
+    color: '#f8f8ff'
   }
 });
 
@@ -79,6 +119,8 @@ configurations.forEach((configuration) => {
 
   const input = <HTMLInputElement>document.createElement('input');
   input.setAttribute('type', 'number');
+  input.setAttribute('placeholder', 'change progress');
+
   const button = <HTMLButtonElement>document.createElement('button');
   button.innerHTML = 'set';
 
