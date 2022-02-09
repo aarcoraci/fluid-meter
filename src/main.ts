@@ -13,8 +13,11 @@ configurations.push({
   backgroundColor: '#002d59',
   borderColor: '#3e4954',
   bubbleColor: '#6bcfff',
-  fontSize: 60,
-
+  fontFamily: 'Codystar',
+  fontSize: 34,
+  progressFormatter: (value) => {
+    return `${value.toFixed(0)}cm²`;
+  },
   fluidConfiguration: {
     color: '#1e90ff'
   }
