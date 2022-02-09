@@ -123,7 +123,7 @@ configurations.forEach((configuration) => {
             if (progress < 0 || progress > 100) {
                 alert('invalid progress. Number between 0 and 100');
             }
-            meter.targetProgress = progress;
+            meter.progress = progress;
         }
     });
     controlsContainer.appendChild(input);

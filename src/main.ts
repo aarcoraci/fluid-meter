@@ -141,7 +141,7 @@ configurations.forEach((configuration) => {
         alert('invalid progress. Number between 0 and 100');
       }
 
-      meter.targetProgress = progress;
+      meter.progress = progress;
     }
   });
 

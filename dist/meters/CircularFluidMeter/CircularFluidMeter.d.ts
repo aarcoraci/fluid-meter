@@ -7,11 +7,9 @@ declare class CircularFluidMeter extends BaseMeter {
     private _bubbles;
     private _meterDiameter;
     private _targetProgress;
-    get targetProgress(): number;
-    set targetProgress(value: number);
     private _progress;
     get progress(): number;
-    set progress(progress: number);
+    set progress(value: number);
     private _calculatedBorderWidth;
     private _borderWidth;
     get borderWidth(): number | BreakpointValueConfig[];
@@ -54,7 +52,7 @@ declare class CircularFluidMeter extends BaseMeter {
     get dropShadow(): boolean;
     set dropShadow(drop: boolean);
     private _progressFormatter;
-    setProgressFormatter(formatter: (value: number) => string): void;
+    set progressFormatter(formatter: (value: number) => string);
     constructor(container: HTMLElement, config?: Partial<CircularFluidMeterConfig>);
     protected draw(): void;
     private clear;

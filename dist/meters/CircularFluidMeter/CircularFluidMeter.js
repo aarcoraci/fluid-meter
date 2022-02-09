@@ -162,17 +162,11 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
         this._progressFormatter = computedConfig.progressFormatter;
         this.calculateDrawingValues();
     }
-    get targetProgress() {
-        return this._targetProgress;
-    }
-    set targetProgress(value) {
-        this._targetProgress = value;
-    }
     get progress() {
         return this._progress;
     }
-    set progress(progress) {
-        this._progress = progress;
+    set progress(value) {
+        this._targetProgress = value;
     }
     get borderWidth() {
         return this._borderWidth;
@@ -254,7 +248,7 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
     set dropShadow(drop) {
         this._dropShadow = drop;
     }
-    setProgressFormatter(formatter) {
+    set progressFormatter(formatter) {
         this._progressFormatter = formatter;
     }
     draw() {
@@ -364,14 +358,14 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
         const meterBottom = this.getMeterBottomLimit();
         const fluidAmount = this.getFluidLevel();
         if (this._progress < this._targetProgress) {
-            this.progress += 15 * this._elapsed;
+            this._progress += 15 * this._elapsed;
             if (this._progress > this._targetProgress) {
                 this._progress = this._targetProgress;
             }
             this.updateBubbleLayer();
         }
         else if (this._progress > this._targetProgress) {
-            this.progress -= 15 * this._elapsed;
+            this._progress -= 15 * this._elapsed;
             if (this._progress < this._targetProgress) {
                 this._progress = this._targetProgress;
             }

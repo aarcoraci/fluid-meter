@@ -22,19 +22,13 @@ class CircularFluidMeter extends BaseMeter {
   private _meterDiameter = 0;
 
   private _targetProgress: number;
-  public get targetProgress() {
-    return this._targetProgress;
-  }
-  public set targetProgress(value: number) {
-    this._targetProgress = value;
-  }
 
   private _progress: number;
   public get progress() {
     return this._progress;
   }
-  public set progress(progress: number) {
-    this._progress = progress;
+  public set progress(value: number) {
+    this._targetProgress = value;
   }
 
   private _calculatedBorderWidth = 0;
@@ -146,7 +140,7 @@ class CircularFluidMeter extends BaseMeter {
   }
 
   private _progressFormatter = (value: number): string => `${value}%`;
-  public setProgressFormatter(formatter: (value: number) => string) {
+  public set progressFormatter(formatter: (value: number) => string) {
     this._progressFormatter = formatter;
   }
 
@@ -331,13 +325,13 @@ class CircularFluidMeter extends BaseMeter {
     const fluidAmount = this.getFluidLevel();
 
     if (this._progress < this._targetProgress) {
-      this.progress += 15 * this._elapsed;
+      this._progress += 15 * this._elapsed;
       if (this._progress > this._targetProgress) {
         this._progress = this._targetProgress;
       }
       this.updateBubbleLayer();
     } else if (this._progress > this._targetProgress) {
-      this.progress -= 15 * this._elapsed;
+      this._progress -= 15 * this._elapsed;
       if (this._progress < this._targetProgress) {
         this._progress = this._targetProgress;
       }
