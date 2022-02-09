@@ -32,7 +32,7 @@ const defaultConfig: Required<CircularFluidMeterConfig> = {
   backgroundColor: '#9f9fae',
   showProgress: true,
   showBubbles: true,
-  bubbleColor: '#ffffff',
+  bubbleColor: '#ffb0b0',
   textColor: '#ffffff',
   textDropShadow: true,
   fontFamily: 'Arial',

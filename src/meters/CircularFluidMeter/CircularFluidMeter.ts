@@ -170,6 +170,7 @@ class CircularFluidMeter extends BaseMeter {
     this._fontFamily = computedConfig.fontFamily;
     this._fontSize = computedConfig.fontSize;
     this._showBubbles = computedConfig.showBubbles;
+    this._bubbleColor = computedConfig.bubbleColor;
     this._use3D = computedConfig.use3D;
     this._dropShadow = computedConfig.dropShadow;
     this._progressFormatter = computedConfig.progressFormatter;
