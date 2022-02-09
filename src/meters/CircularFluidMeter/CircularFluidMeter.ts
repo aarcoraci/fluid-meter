@@ -197,6 +197,11 @@ class CircularFluidMeter extends BaseMeter {
     this._context.clearRect(0, 0, this._width, this._height);
   }
 
+  /**
+   * calculates the values required to correctly draw all components.
+   * should be called on init and on resize or when some key value
+   * changes such as border width or padding
+   */
   private calculateDrawingValues(): void {
     this._meterRadius = this.calculateCircleRadius();
     this._layers = FluidLayerHelper.buildFluidLayersFromConfiguration(
@@ -418,11 +423,6 @@ class CircularFluidMeter extends BaseMeter {
     this._context.save();
     this._bubbles.bubbles.forEach((bubble) => {
       bubble.update(this._elapsed);
-
-      // if (bubble.y <= this._bubbles.yThreshold) {
-      //   this._bubbles.resetBubble(bubble);
-      // }
-
       if (bubble.isDead) {
         this._bubbles.resetBubble(bubble);
       }
