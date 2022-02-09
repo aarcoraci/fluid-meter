@@ -374,21 +374,26 @@ class CircularFluidMeter extends BaseMeter {
   private drawBubbles() {
     this._context.save();
     this._bubbles.bubbles.forEach((bubble) => {
-      bubble.y -= bubble.velY * this._elapsed;
+      bubble.update(this._elapsed);
 
-      if (bubble.y <= this._bubbles.yThreshold) {
+      // if (bubble.y <= this._bubbles.yThreshold) {
+      //   this._bubbles.resetBubble(bubble);
+      // }
+
+      if (bubble.isDead) {
         this._bubbles.resetBubble(bubble);
       }
 
       this._context.beginPath();
       this._context.strokeStyle = 'white';
       this._context.arc(
-        bubble.x - bubble.r / 2,
-        bubble.y - bubble.r / 2,
-        bubble.r,
+        bubble.x - bubble.currentRadius / 2,
+        bubble.y - bubble.currentRadius / 2,
+        bubble.currentRadius,
         0,
         2 * Math.PI
       );
+      this._context.filter = `opacity(${bubble.currentOpacity})`;
       this._context.stroke();
       this._context.closePath();
     });

@@ -16,7 +16,7 @@ type CircularFluidMeterConfig = {
 };
 
 const defaultConfig: Required<CircularFluidMeterConfig> = {
-  initialProgress: 33,
+  initialProgress: 50,
   borderWidth: [
     { resolution: 0, value: 10 },
     { resolution: 768, value: 15 },
