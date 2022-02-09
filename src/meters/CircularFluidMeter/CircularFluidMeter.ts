@@ -97,6 +97,14 @@ class CircularFluidMeter extends BaseMeter {
     this._showBubbles = show;
   }
 
+  private _bubbleColor = '#ffffff';
+  public get bubbleColor() {
+    return this._bubbleColor;
+  }
+  public set bubbleColor(color: string) {
+    this._bubbleColor = color;
+  }
+
   private _use3D = true;
   public get use3D() {
     return this._use3D;
@@ -420,7 +428,7 @@ class CircularFluidMeter extends BaseMeter {
       }
 
       this._context.beginPath();
-      this._context.strokeStyle = 'white';
+      this._context.strokeStyle = this._bubbleColor;
       this._context.arc(
         bubble.x - bubble.currentRadius / 2,
         bubble.y - bubble.currentRadius / 2,

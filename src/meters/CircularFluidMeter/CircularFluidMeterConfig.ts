@@ -8,6 +8,7 @@ type CircularFluidMeterConfig = {
   backgroundColor?: string;
   showProgress?: boolean;
   showBubbles?: boolean;
+  bubbleColor?: string;
   textColor?: string;
   fluidConfiguration: FluidLayerConfiguration;
   fontFamily?: string;
@@ -28,6 +29,7 @@ const defaultConfig: Required<CircularFluidMeterConfig> = {
   backgroundColor: '#c3c3c3',
   showProgress: true,
   showBubbles: true,
+  bubbleColor: '#ffffff',
   textColor: '#ffffff',
   fontFamily: 'Arial',
   fontSize: [
