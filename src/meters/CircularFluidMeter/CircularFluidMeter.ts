@@ -39,6 +39,15 @@ class CircularFluidMeter extends BaseMeter {
     this.calculateDrawingValues();
   }
 
+  private _padding = 15;
+  public get meterPadding() {
+    return this._padding;
+  }
+  public set meterPadding(padding: number) {
+    this._padding = padding;
+    this.calculateDrawingValues();
+  }
+
   private _backgroundColor = '#ff00ff';
   public get backgroundColor() {
     return this._backgroundColor;
@@ -96,6 +105,14 @@ class CircularFluidMeter extends BaseMeter {
     this._use3D = show;
   }
 
+  private _dropShadow = true;
+  public get dropShadow() {
+    return this._dropShadow;
+  }
+  public set dropShadow(drop: boolean) {
+    this._dropShadow = drop;
+  }
+
   private _progressFormatter = (value: string): string => `${value}%`;
   public setProgressFormatter(formatter: (value: string) => string) {
     this._progressFormatter = formatter;
@@ -109,6 +126,7 @@ class CircularFluidMeter extends BaseMeter {
     };
 
     this._borderWidth = computedConfig.borderWidth;
+    this._padding = computedConfig.padding;
     this._progress = computedConfig.initialProgress;
     this._backgroundColor = computedConfig.backgroundColor;
     this._fluidConfiguration = computedConfig.fluidConfiguration;
@@ -118,6 +136,7 @@ class CircularFluidMeter extends BaseMeter {
     this._fontSize = computedConfig.fontSize;
     this._showBubbles = computedConfig.showBubbles;
     this._use3D = computedConfig.use3D;
+    this._dropShadow = computedConfig.dropShadow;
     this._progressFormatter = computedConfig.progressFormatter;
 
     this.calculateDrawingValues();
@@ -125,6 +144,23 @@ class CircularFluidMeter extends BaseMeter {
 
   protected draw(): void {
     this.clear();
+
+    if (this._dropShadow) {
+      this._context.save();
+      this._context.beginPath();
+      this._context.filter = 'drop-shadow(0px 4px 6px rgba(0,0,0,0.45))';
+      this._context.arc(
+        this._width / 2,
+        this._height / 2,
+        this._meterRadius / 2,
+        0,
+        2 * Math.PI
+      );
+      this._context.closePath();
+      this._context.fill();
+      this._context.restore();
+    }
+
     this._context.save();
     this._context.arc(
       this._width / 2,
@@ -286,7 +322,6 @@ class CircularFluidMeter extends BaseMeter {
 
   private drawBackground(): void {
     this._context.save();
-
     this._context.beginPath();
     this._context.arc(
       this._width / 2,
@@ -402,9 +437,9 @@ class CircularFluidMeter extends BaseMeter {
 
   private calculateCircleRadius(): number {
     if (this._width > this._height) {
-      return this._height;
+      return this._height - this._padding;
     } else {
-      return this._width;
+      return this._width - this._padding;
     }
   }
 
