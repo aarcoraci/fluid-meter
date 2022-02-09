@@ -7,3 +7,9 @@
   width: 50vw;
   height: 500px;
 }
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}

@@ -3,4 +3,14 @@ import { CircularFluidMeter } from './meters/CircularFluidMeter/CircularFluidMet
 import './style.css';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
-new CircularFluidMeter(app);
+const meter = new CircularFluidMeter(app);
+
+const button1 = document.querySelector<HTMLButtonElement>('#update-button-1');
+const button2 = document.querySelector<HTMLButtonElement>('#update-button-2');
+button1?.addEventListener('click', () => {
+  meter.targetProgress = 10;
+});
+
+button2?.addEventListener('click', () => {
+  meter.targetProgress = 75;
+});

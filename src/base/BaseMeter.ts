@@ -17,8 +17,8 @@ abstract class BaseMeter {
   constructor(container: HTMLElement) {
     this._container = container;
     const size = this._container.getBoundingClientRect();
-    this._width = size.width;
-    this._height = size.height;
+    this._width = Math.floor(size.width);
+    this._height = Math.floor(size.height);
 
     this._canvas = document.createElement('canvas');
     this._canvas.width = this._width;
@@ -54,10 +54,13 @@ abstract class BaseMeter {
   protected resize(): void {
     if (this._container !== undefined) {
       const size = this._container.getBoundingClientRect();
-      this._width = size.width;
-      this._height = size.height;
-      this._canvas.width = this._width;
-      this._canvas.height = this._height;
+      const width = Math.floor(size.width);
+      const height = Math.floor(size.height);
+
+      this._width = width;
+      this._height = height;
+      this._canvas.width = width;
+      this._canvas.height = height;
     }
   }
 

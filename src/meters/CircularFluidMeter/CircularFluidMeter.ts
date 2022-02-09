@@ -19,9 +19,18 @@ class CircularFluidMeter extends BaseMeter {
   private _fluidConfiguration: FluidLayerConfiguration;
   private _layers?: [FluidLayer, FluidLayer];
   private _bubbles = new BubblesLayer();
-  private _meterRadius = 0;
+  private _meterDiameter = 0;
 
-  private _progress = 33;
+  private _targetProgress: number;
+  public get targetProgress() {
+    return this._targetProgress;
+  }
+  public set targetProgress(value: number) {
+    this._targetProgress = value;
+    this.updateBubbleLayer();
+  }
+
+  private _progress: number;
   public get progress() {
     return this._progress;
   }
@@ -137,8 +146,8 @@ class CircularFluidMeter extends BaseMeter {
     this._dropShadow = drop;
   }
 
-  private _progressFormatter = (value: string): string => `${value}%`;
-  public setProgressFormatter(formatter: (value: string) => string) {
+  private _progressFormatter = (value: number): string => `${value}%`;
+  public setProgressFormatter(formatter: (value: number) => string) {
     this._progressFormatter = formatter;
   }
 
@@ -153,6 +162,7 @@ class CircularFluidMeter extends BaseMeter {
     this._borderColor = computedConfig.borderColor;
     this._padding = computedConfig.padding;
     this._progress = computedConfig.initialProgress;
+    this._targetProgress = this._progress;
     this._backgroundColor = computedConfig.backgroundColor;
     this._fluidConfiguration = computedConfig.fluidConfiguration;
     this._textColor = computedConfig.textColor;
@@ -178,7 +188,7 @@ class CircularFluidMeter extends BaseMeter {
       this._context.arc(
         this._width / 2,
         this._height / 2,
-        this._meterRadius / 2,
+        this._meterDiameter / 2,
         0,
         2 * Math.PI
       );
@@ -191,7 +201,7 @@ class CircularFluidMeter extends BaseMeter {
     this._context.arc(
       this._width / 2,
       this._height / 2,
-      this._meterRadius / 2 - this._calculatedBorderWidth,
+      this._meterDiameter / 2 - this._calculatedBorderWidth,
       0,
       Math.PI * 2
     );
@@ -221,10 +231,11 @@ class CircularFluidMeter extends BaseMeter {
    * changes such as border width or padding
    */
   private calculateDrawingValues(): void {
-    this._meterRadius = this.calculateCircleRadius();
+    this._meterDiameter = this.calculateMeterDiameter();
+
     this._layers = FluidLayerHelper.buildFluidLayersFromConfiguration(
       this._fluidConfiguration,
-      this._meterRadius
+      this._meterDiameter
     );
 
     // responsive (if required)
@@ -246,47 +257,47 @@ class CircularFluidMeter extends BaseMeter {
         this._fontSize
       );
     }
-
     // values for the bubble layer
+    this.updateBubbleLayer();
+    this._bubbles.reset();
+  }
+
+  private updateBubbleLayer() {
     const meterBottomLimit = this.getMeterBottomLimit();
-    const minY = meterBottomLimit * 0.85;
+
+    let yThreshold = this.getFluidLevel();
+    if (this._layers) {
+      yThreshold += this._layers[0].waveAmplitude;
+    }
+
+    let minY = meterBottomLimit * 0.85;
+    if (minY < yThreshold) {
+      minY = yThreshold;
+    }
     const maxY = meterBottomLimit;
 
-    const yThreshold =
-      maxY -
-      this.getFluidLevel() +
-      this._layers[0].waveAmplitude +
-      this._bubbles.averageSize * 2;
-
-    const minX = this._width / 2 - this._meterRadius;
-    const maxX = this._width / 2 + this._meterRadius;
+    const minX = this._width / 2 - this._meterDiameter;
+    const maxX = this._width / 2 + this._meterDiameter;
 
     this._bubbles.minY = minY;
     this._bubbles.maxY = maxY;
     this._bubbles.minX = minX;
     this._bubbles.maxX = maxX;
     this._bubbles.yThreshold = yThreshold;
-    this._bubbles.averageSize = this._meterRadius * 0.01;
-    this._bubbles.averageSpeed = (this._meterRadius * 2) / 14; // should take X seconds to go from bottom to top
+    this._bubbles.averageSize = this._meterDiameter * 0.01;
+    this._bubbles.averageSpeed = (this._meterDiameter * 2) / 14; // should take X seconds to go from bottom to top
     this._bubbles.speedDeviation = this._bubbles.averageSpeed * 0.25;
-    this._bubbles.reset();
   }
 
   // bottom limit where fluid gets drawn
   private getMeterBottomLimit(): number {
-    return (
-      this._height -
-      (this._height - this._meterRadius) / 2 -
-      this._calculatedBorderWidth
-    );
+    return this._height - (this._height - this._meterDiameter) / 2;
   }
 
   // returns the line where the fluid makes waves
   private getFluidLevel(): number {
-    return (
-      (this._progress * (this._meterRadius - this._calculatedBorderWidth * 2)) /
-      100
-    );
+    const meterFillPercentage = (this._meterDiameter * this._progress) / 100;
+    return this.getMeterBottomLimit() - meterFillPercentage;
   }
 
   private drawLayer(layer: FluidLayer, canUse3d = true) {
@@ -308,22 +319,22 @@ class CircularFluidMeter extends BaseMeter {
     const meterBottom = this.getMeterBottomLimit();
     const fluidAmount = this.getFluidLevel();
 
-    // if (this._progress < fillPercentage) {
-    //   currentFillPercentage += 15 * dt;
-    // } else if (this._progress > fillPercentage) {
-    //   currentFillPercentage -= 15 * dt;
-    // }
-
-    const initialHeight = meterBottom - fluidAmount;
+    if (this._progress < this._targetProgress) {
+      this.progress += 15 * this._elapsed;
+      this.updateBubbleLayer();
+    } else if (this._progress > this._targetProgress) {
+      this.progress -= 15 * this._elapsed;
+      this.updateBubbleLayer();
+    }
 
     this._context.save();
     this._context.beginPath();
 
-    this._context.lineTo(0, initialHeight);
+    this._context.lineTo(0, fluidAmount);
 
     while (x < this._width) {
       y =
-        initialHeight +
+        fluidAmount +
         amplitude * Math.sin((x + layer.horizontalPosition) / layer.frequency);
       this._context.lineTo(x, y);
 
@@ -337,14 +348,14 @@ class CircularFluidMeter extends BaseMeter {
     if (this._use3D && canUse3d) {
       const x1 = this._width / 2;
       const y1 = meterBottom;
-      const r1 = this._meterRadius * 0.01;
+      const r1 = this._meterDiameter * 0.01;
       const gradientBackgroundFill = this._context.createRadialGradient(
         x1,
         y1,
         r1,
         x1,
         y1,
-        this._meterRadius
+        this._meterDiameter
       );
       const startColor = layer.color;
       const endColor = ColorUtils.pSBC(-0.8, layer.color);
@@ -363,7 +374,7 @@ class CircularFluidMeter extends BaseMeter {
   }
 
   private drawText(): void {
-    const text = this._progressFormatter(this._progress.toString());
+    const text = this._progressFormatter(this._progress);
 
     this._context.save();
     this._context.font = `${this._calculatedFontSize}px ${this._fontFamily}`;
@@ -384,7 +395,7 @@ class CircularFluidMeter extends BaseMeter {
     this._context.arc(
       this._width / 2,
       this._height / 2,
-      this._meterRadius / 2 - this._calculatedBorderWidth,
+      this._meterDiameter / 2 - this._calculatedBorderWidth,
       0,
       2 * Math.PI
     );
@@ -393,14 +404,14 @@ class CircularFluidMeter extends BaseMeter {
     if (this._use3D) {
       const x1 = this._width / 2;
       const y1 = this._height / 2;
-      const r1 = this._meterRadius * 0.1;
+      const r1 = this._meterDiameter * 0.1;
       const gradientBackgroundFill = this._context.createRadialGradient(
         x1,
         y1,
         r1,
         x1,
         y1,
-        this._meterRadius
+        this._meterDiameter
       );
       const startColor = this._backgroundColor;
       const endColor = ColorUtils.pSBC(-0.8, this.backgroundColor);
@@ -426,7 +437,7 @@ class CircularFluidMeter extends BaseMeter {
     this._context.arc(
       this._width / 2,
       this._height / 2,
-      this._meterRadius / 2 - this._calculatedBorderWidth / 2,
+      this._meterDiameter / 2 - this._calculatedBorderWidth / 2,
       0,
       2 * Math.PI
     );
@@ -441,7 +452,7 @@ class CircularFluidMeter extends BaseMeter {
     this._context.arc(
       this._width / 2,
       this._height / 2,
-      this._meterRadius / 2 - this._calculatedBorderWidth * 0.85,
+      this._meterDiameter / 2 - this._calculatedBorderWidth * 0.85,
       0,
       2 * Math.PI
     );
@@ -450,13 +461,14 @@ class CircularFluidMeter extends BaseMeter {
 
     // outer border
     const outerBorderColor = ColorUtils.pSBC(0.05, this._borderColor);
-    this._context.lineWidth = this._calculatedBorderWidth * 0.15;
+    const outerBorderWidth = this._calculatedBorderWidth * 0.15;
+    this._context.lineWidth = outerBorderWidth;
     this._context.strokeStyle = outerBorderColor || this._borderColor;
     this._context.beginPath();
     this._context.arc(
       this._width / 2,
       this._height / 2,
-      this._meterRadius / 2,
+      this._meterDiameter / 2 - outerBorderWidth / 2,
       0,
       2 * Math.PI
     );
@@ -470,9 +482,9 @@ class CircularFluidMeter extends BaseMeter {
     if (this._use3D) {
       this._context.save();
       this._context.filter = 'blur(10px) blur(15px) opacity(0.65)';
-      let x = this._width / 2 - this._meterRadius / 6;
-      let y = this._height / 2 - this._meterRadius / 6;
-      let size = this._meterRadius * 0.095;
+      let x = this._width / 2 - this._meterDiameter / 6;
+      let y = this._height / 2 - this._meterDiameter / 6;
+      let size = this._meterDiameter * 0.095;
       this._context.fillStyle = 'white';
       this._context.beginPath();
       this._context.arc(x, y, size, 0, 2 * Math.PI);
@@ -482,9 +494,9 @@ class CircularFluidMeter extends BaseMeter {
 
       this._context.save();
       this._context.filter = 'blur(8px)  opacity(0.39)';
-      x = this._width / 2 + this._meterRadius / 4.3;
-      y = this._height / 2 + this._meterRadius / 4.3;
-      size = this._meterRadius * 0.045;
+      x = this._width / 2 + this._meterDiameter / 4.3;
+      y = this._height / 2 + this._meterDiameter / 4.3;
+      size = this._meterDiameter * 0.045;
       this._context.fillStyle = 'white';
       this._context.beginPath();
       this._context.arc(x, y, size, 0, 2 * Math.PI);
@@ -498,7 +510,7 @@ class CircularFluidMeter extends BaseMeter {
     this._context.save();
     this._bubbles.bubbles.forEach((bubble) => {
       bubble.update(this._elapsed);
-      if (bubble.isDead) {
+      if (bubble.isDead || bubble.y < this._bubbles.yThreshold) {
         this._bubbles.resetBubble(bubble);
       }
 
@@ -518,8 +530,8 @@ class CircularFluidMeter extends BaseMeter {
     this._context.restore();
   }
 
-  private calculateCircleRadius(): number {
-    if (this._width > this._height) {
+  private calculateMeterDiameter(): number {
+    if (this._width >= this._height) {
       return this._height - this._padding;
     } else {
       return this._width - this._padding;

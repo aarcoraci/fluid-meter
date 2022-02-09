@@ -17,11 +17,11 @@ type CircularFluidMeterConfig = {
   fontSize?: number | BreakpointValueConfig[];
   use3D?: boolean;
   dropShadow?: boolean;
-  progressFormatter?: (value: string) => string;
+  progressFormatter?: (value: number) => string;
 };
 
 const defaultConfig: Required<CircularFluidMeterConfig> = {
-  initialProgress: 75,
+  initialProgress: 33,
   borderWidth: [
     { resolution: 0, value: 10 },
     { resolution: 768, value: 15 },
@@ -44,7 +44,7 @@ const defaultConfig: Required<CircularFluidMeterConfig> = {
   ],
   use3D: true,
   dropShadow: true,
-  progressFormatter: (value: string) => value,
+  progressFormatter: (value: number) => Math.round(value).toString(),
   fluidConfiguration: {
     color: '#ff0000',
     waveSpeed: Speed.NORMAL,

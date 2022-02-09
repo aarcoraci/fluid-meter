@@ -35,12 +35,12 @@ abstract class FluidLayerSettings {
 abstract class FluidLayerHelper {
   static buildFluidLayersFromConfiguration(
     configuration: FluidLayerConfiguration,
-    meterRadius: number
+    meterDiameter: number
   ): [FluidLayer, FluidLayer] {
     // determine values
     let waveSpeed = FluidLayerSettings.ANGULAR_SPEED_NORMAL;
     let horizontalSpeed = FluidLayerSettings.HORIZONTAL_SPEED_NORMAL;
-    const frequency = this.calculateFrequency(meterRadius);
+    const frequency = this.calculateFrequency(meterDiameter);
 
     switch (configuration.horizontalSpeed) {
       case Speed.FAST:
@@ -67,7 +67,7 @@ abstract class FluidLayerHelper {
     }
 
     const backgroundColor = ColorUtils.pSBC(-0.75, configuration.color);
-    const waveAmplitude = this.calculateWaveAmplitude(meterRadius);
+    const waveAmplitude = this.calculateWaveAmplitude(meterDiameter);
 
     const foreGroundLayer: FluidLayer = {
       angle: 0,
@@ -91,11 +91,11 @@ abstract class FluidLayerHelper {
     return [backgroundLayer, foreGroundLayer];
   }
 
-  private static calculateWaveAmplitude(meterRadius: number): number {
-    return meterRadius * 0.021;
+  private static calculateWaveAmplitude(meterDiameter: number): number {
+    return meterDiameter * 0.021;
   }
-  private static calculateFrequency(meterRadius: number): number {
-    return meterRadius / 11;
+  private static calculateFrequency(meterDiameter: number): number {
+    return meterDiameter / 11;
   }
 }
 
