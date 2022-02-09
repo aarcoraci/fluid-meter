@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc"
+    "build": "tsc && vite build",
+    "ts-build": "tsc"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.11.0",

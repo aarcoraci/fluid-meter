@@ -1,0 +1,22 @@
+import { BreakpointValueConfig } from '../../utils/ResponsiveUtils';
+import { FluidLayerConfiguration } from './Layers/FluidLayer';
+declare type CircularFluidMeterConfig = {
+    initialProgress?: number;
+    borderWidth?: number | BreakpointValueConfig[];
+    borderColor: string;
+    padding?: number;
+    backgroundColor?: string;
+    showProgress?: boolean;
+    showBubbles?: boolean;
+    bubbleColor?: string;
+    textColor?: string;
+    textDropShadow?: boolean;
+    fluidConfiguration: FluidLayerConfiguration;
+    fontFamily?: string;
+    fontSize?: number | BreakpointValueConfig[];
+    use3D?: boolean;
+    dropShadow?: boolean;
+    progressFormatter?: (value: number) => string;
+};
+declare const defaultConfig: Required<CircularFluidMeterConfig>;
+export { CircularFluidMeterConfig, defaultConfig };
