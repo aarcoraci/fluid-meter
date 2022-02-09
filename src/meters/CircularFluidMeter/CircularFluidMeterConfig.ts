@@ -4,6 +4,7 @@ import { FluidLayerConfiguration, Speed } from './Layers/FluidLayer';
 type CircularFluidMeterConfig = {
   initialProgress?: number;
   borderWidth?: number | BreakpointValueConfig[];
+  borderColor: string;
   padding?: number;
   backgroundColor?: string;
   showProgress?: boolean;
@@ -20,12 +21,13 @@ type CircularFluidMeterConfig = {
 };
 
 const defaultConfig: Required<CircularFluidMeterConfig> = {
-  initialProgress: 50,
+  initialProgress: 75,
   borderWidth: [
     { resolution: 0, value: 10 },
     { resolution: 768, value: 15 },
-    { resolution: 1440, value: 25 }
+    { resolution: 1440, value: 30 }
   ],
+  borderColor: '#0000ff',
   padding: 30,
   backgroundColor: '#c3c3c3',
   showProgress: true,

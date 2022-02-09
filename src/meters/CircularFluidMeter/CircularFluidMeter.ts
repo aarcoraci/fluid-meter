@@ -39,6 +39,14 @@ class CircularFluidMeter extends BaseMeter {
     this.calculateDrawingValues();
   }
 
+  private _borderColor = '#ff00ff';
+  public get borderColor() {
+    return this._borderColor;
+  }
+  public set borderColor(color: string) {
+    this._borderColor = color;
+  }
+
   private _padding = 15;
   public get meterPadding() {
     return this._padding;
@@ -142,6 +150,7 @@ class CircularFluidMeter extends BaseMeter {
     };
 
     this._borderWidth = computedConfig.borderWidth;
+    this._borderColor = computedConfig.borderColor;
     this._padding = computedConfig.padding;
     this._progress = computedConfig.initialProgress;
     this._backgroundColor = computedConfig.backgroundColor;
@@ -403,7 +412,6 @@ class CircularFluidMeter extends BaseMeter {
       this._context.fillStyle = gradientBackgroundFill;
     } else {
       this._context.fillStyle = this.backgroundColor;
-      this._context.fill();
     }
 
     this._context.fill();
@@ -413,7 +421,7 @@ class CircularFluidMeter extends BaseMeter {
   private drawForeground(): void {
     this._context.save();
     this._context.lineWidth = this._calculatedBorderWidth;
-    this._context.strokeStyle = '#0000ff';
+    this._context.strokeStyle = this._borderColor;
     this._context.beginPath();
     this._context.arc(
       this._width / 2,
@@ -424,6 +432,37 @@ class CircularFluidMeter extends BaseMeter {
     );
     this._context.closePath();
     this._context.stroke();
+
+    // inner border
+    const innerBorderColor = ColorUtils.pSBC(-0.35, this._borderColor);
+    this._context.lineWidth = this._calculatedBorderWidth * 0.25;
+    this._context.strokeStyle = innerBorderColor || this._borderColor;
+    this._context.beginPath();
+    this._context.arc(
+      this._width / 2,
+      this._height / 2,
+      this._meterRadius / 2 - this._calculatedBorderWidth * 0.85,
+      0,
+      2 * Math.PI
+    );
+    this._context.closePath();
+    this._context.stroke();
+
+    // outer border
+    const outerBorderColor = ColorUtils.pSBC(0.05, this._borderColor);
+    this._context.lineWidth = this._calculatedBorderWidth * 0.15;
+    this._context.strokeStyle = outerBorderColor || this._borderColor;
+    this._context.beginPath();
+    this._context.arc(
+      this._width / 2,
+      this._height / 2,
+      this._meterRadius / 2,
+      0,
+      2 * Math.PI
+    );
+    this._context.closePath();
+    this._context.stroke();
+
     this._context.restore();
 
     // details
