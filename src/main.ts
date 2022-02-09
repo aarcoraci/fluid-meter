@@ -111,7 +111,7 @@ configurations.forEach((configuration) => {
   const meterContainer = <HTMLDivElement>document.createElement('div');
   meterContainer.classList.add('meter-container');
 
-  mainContainer.appendChild(meterContainer);
+  mainContainer!.appendChild(meterContainer);
 
   const meterHTMLElement = <HTMLDivElement>document.createElement('div');
   meterHTMLElement.classList.add('meter');

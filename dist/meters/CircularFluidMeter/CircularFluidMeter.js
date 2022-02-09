@@ -263,7 +263,7 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
             this._context.save();
             this._context.beginPath();
             this._context.filter = 'drop-shadow(0px 4px 6px rgba(0,0,0,0.45))';
-            this._context.arc(this._width / 2, this._height / 2, this._meterDiameter / 2, 0, 2 * Math.PI);
+            this._context.arc(this._width / 2, this._height / 2, this._meterDiameter / 2 - 1, 0, 2 * Math.PI);
             this._context.closePath();
             this._context.fill();
             this._context.restore();
@@ -278,7 +278,9 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
             this.drawLayer(this._layers[0], false);
             this.drawLayer(this._layers[1]);
         }
-        this.drawBubbles();
+        if (this._showBubbles) {
+            this.drawBubbles();
+        }
         if (this._showProgress) {
             this.drawText();
         }
@@ -363,10 +365,16 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
         const fluidAmount = this.getFluidLevel();
         if (this._progress < this._targetProgress) {
             this.progress += 15 * this._elapsed;
+            if (this._progress > this._targetProgress) {
+                this._progress = this._targetProgress;
+            }
             this.updateBubbleLayer();
         }
         else if (this._progress > this._targetProgress) {
             this.progress -= 15 * this._elapsed;
+            if (this._progress < this._targetProgress) {
+                this._progress = this._targetProgress;
+            }
             this.updateBubbleLayer();
         }
         this._context.save();
@@ -448,10 +456,13 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
         this._context.stroke();
         // inner border
         const innerBorderColor = ColorUtils_1.ColorUtils.pSBC(-0.35, this._borderColor);
-        this._context.lineWidth = this._calculatedBorderWidth * 0.25;
+        const innerBorderWidth = this._calculatedBorderWidth * 0.25;
+        this._context.lineWidth = innerBorderWidth;
         this._context.strokeStyle = innerBorderColor || this._borderColor;
         this._context.beginPath();
-        this._context.arc(this._width / 2, this._height / 2, this._meterDiameter / 2 - this._calculatedBorderWidth * 0.85, 0, 2 * Math.PI);
+        this._context.arc(this._width / 2, this._height / 2, this._meterDiameter / 2 -
+            this._calculatedBorderWidth * 0.85 -
+            innerBorderWidth / 2, 0, 2 * Math.PI);
         this._context.closePath();
         this._context.stroke();
         // outer border

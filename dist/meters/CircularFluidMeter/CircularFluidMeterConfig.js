@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.defaultConfig = void 0;
 const FluidLayer_1 = require("./Layers/FluidLayer");
 const defaultConfig = {
-    initialProgress: 33,
+    initialProgress: 0,
     borderWidth: [
         { resolution: 0, value: 10 },
         { resolution: 768, value: 15 },
@@ -14,7 +14,7 @@ const defaultConfig = {
     backgroundColor: '#9f9fae',
     showProgress: true,
     showBubbles: true,
-    bubbleColor: '#ffb0b0',
+    bubbleColor: '#ffffff',
     textColor: '#ffffff',
     textDropShadow: true,
     fontFamily: 'Arial',

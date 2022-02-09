@@ -75,12 +75,12 @@ class FluidLayerHelper {
                 waveSpeed = FluidLayerSettings.ANGULAR_SPEED_NORMAL;
                 break;
         }
-        const backgroundColor = ColorUtils_1.ColorUtils.pSBC(-0.75, configuration.color);
+        const backgroundColor = ColorUtils_1.ColorUtils.pSBC(-0.75, configuration.color || '#ffffff');
         const waveAmplitude = this.calculateWaveAmplitude(meterDiameter);
         const foreGroundLayer = {
             angle: 0,
             horizontalPosition: 0,
-            color: configuration.color,
+            color: configuration.color || '#ffffff',
             frequency: frequency,
             waveAmplitude: waveAmplitude,
             horizontalSpeed: horizontalSpeed,
@@ -89,7 +89,9 @@ class FluidLayerHelper {
         const backgroundLayer = {
             angle: 0,
             horizontalPosition: 0,
-            color: backgroundColor ? backgroundColor : configuration.color,
+            color: backgroundColor
+                ? backgroundColor
+                : configuration.color || '#ffffff',
             frequency: frequency,
             waveAmplitude: waveAmplitude,
             horizontalSpeed: -horizontalSpeed,

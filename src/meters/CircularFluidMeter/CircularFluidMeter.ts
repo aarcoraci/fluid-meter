@@ -150,7 +150,10 @@ class CircularFluidMeter extends BaseMeter {
     this._progressFormatter = formatter;
   }
 
-  constructor(container: HTMLElement, config?: CircularFluidMeterConfig) {
+  constructor(
+    container: HTMLElement,
+    config?: Partial<CircularFluidMeterConfig>
+  ) {
     super(container);
     const computedConfig: Required<CircularFluidMeterConfig> = {
       ...defaultConfig,

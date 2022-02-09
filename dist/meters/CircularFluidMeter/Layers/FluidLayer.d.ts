@@ -8,9 +8,9 @@ declare type FluidLayer = {
     frequency: number;
 };
 declare type FluidLayerConfiguration = {
-    color: string;
-    waveSpeed: Speed;
-    horizontalSpeed: Speed;
+    color?: string;
+    waveSpeed?: Speed;
+    horizontalSpeed?: Speed;
 };
 declare enum Speed {
     SLOW = 0,
