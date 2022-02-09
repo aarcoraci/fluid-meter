@@ -72,20 +72,20 @@ m.use3D = false;
 
 ##### list of setters and getters
 
-| setter / getter   | info                      |
-| ----------------- | ------------------------- | ------------------------- |
-| progress          | number                    |
-| borderWidth       | number                    | BreakpointValueConfig\[\] |
-| borderColor       | string                    |
-| meterPadding      | number                    |
-| backgroundColor   | string                    |
-| textColor         | string                    |
-| fontFamily        | string                    |
-| fontSize          | number                    | BreakpointValueConfig\[\] |
-| textDropShadow    | boolean                   |
-| showProgress      | boolean                   |
-| showBubbles       | boolean                   |
-| bubbleColor       | string                    |
-| use3D             | boolean                   |
-| dropShadow        | boolean                   |
-| progressFormatter | (value: number) => string |
+| setter / getter   | info                                |
+| ----------------- | ----------------------------------- |
+| progress          | number                              |
+| borderWidth       | number or BreakpointValueConfig\[\] |
+| borderColor       | string                              |
+| meterPadding      | number                              |
+| backgroundColor   | string                              |
+| textColor         | string                              |
+| fontFamily        | string                              |
+| fontSize          | number or BreakpointValueConfig\[\] |
+| textDropShadow    | boolean                             |
+| showProgress      | boolean                             |
+| showBubbles       | boolean                             |
+| bubbleColor       | string                              |
+| use3D             | boolean                             |
+| dropShadow        | boolean                             |
+| progressFormatter | (value: number) => string           |
