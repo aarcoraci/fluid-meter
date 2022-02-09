@@ -1,46 +1,15 @@
-import { BaseMeter } from '../base/BaseMeter';
-import { BubblesLayer } from '../base/BubblesLayer';
+import { BaseMeter } from '../../base/BaseMeter';
+import { BubblesLayer } from './Layers/BubblesLayer';
 import {
   FluidLayer,
   FluidLayerConfiguration,
-  FluidLayerHelper,
-  Speed
-} from '../base/FluidLayer';
-import { ColorUtils } from '../utils/ColorUtils';
-
-type CircularFluidMeterConfig = {
-  initialProgress?: number;
-  borderWidth?: number;
-  padding?: number;
-  backgroundColor?: string;
-  showProgress?: boolean;
-  showBubbles?: boolean;
-  textColor?: string;
-  fluidConfiguration: FluidLayerConfiguration;
-  fontFamily?: string;
-  fontSize?: number;
-  use3D?: boolean;
-  progressFormatter?: (value: string) => string;
-};
-
-const defaultConfig: Required<CircularFluidMeterConfig> = {
-  initialProgress: 33,
-  borderWidth: 25,
-  padding: 15,
-  backgroundColor: '#c3c3c3',
-  showProgress: true,
-  showBubbles: true,
-  textColor: '#ffffff',
-  fontFamily: 'Arial',
-  fontSize: 55,
-  use3D: true,
-  progressFormatter: (value: string) => value,
-  fluidConfiguration: {
-    color: '#ff0000',
-    waveSpeed: Speed.FAST,
-    horizontalSpeed: Speed.NORMAL
-  }
-};
+  FluidLayerHelper
+} from './Layers/FluidLayer';
+import { ColorUtils } from '../../utils/ColorUtils';
+import {
+  CircularFluidMeterConfig,
+  defaultConfig
+} from './CircularFluidMeterConfig';
 
 class CircularFluidMeter extends BaseMeter {
   private _fluidConfiguration: FluidLayerConfiguration;
@@ -135,7 +104,7 @@ class CircularFluidMeter extends BaseMeter {
     this._progressFormatter = formatter;
   }
 
-  constructor(container: HTMLElement, config: CircularFluidMeterConfig) {
+  constructor(container: HTMLElement, config?: CircularFluidMeterConfig) {
     super(container);
     const computedConfig: Required<CircularFluidMeterConfig> = {
       ...defaultConfig,
@@ -419,4 +388,4 @@ class CircularFluidMeter extends BaseMeter {
   }
 }
 
-export { CircularFluidMeter, CircularFluidMeterConfig };
+export { CircularFluidMeter };

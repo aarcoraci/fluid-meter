@@ -1,1 +1,1 @@
-export { CircularFluidMeter } from './meters/CircularFluidMeter';
+export { CircularFluidMeter } from './meters/CircularFluidMeter/CircularFluidMeter';

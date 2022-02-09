@@ -1,4 +1,4 @@
-import { random } from '../utils/MathUtils';
+import { random } from '../../../utils/MathUtils';
 
 class BubblesLayer {
   bubbles: Bubble[] = [];

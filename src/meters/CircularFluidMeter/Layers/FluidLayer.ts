@@ -1,4 +1,4 @@
-import { ColorUtils } from '../utils/ColorUtils';
+import { ColorUtils } from '../../../utils/ColorUtils';
 
 type FluidLayer = {
   waveAmplitude: number;
@@ -42,7 +42,7 @@ abstract class FluidLayerHelper {
     // determine values
     let waveSpeed = FluidLayerSettings.ANGULAR_SPEED_NORMAL;
     let horizontalSpeed = FluidLayerSettings.HORIZONTAL_SPEED_NORMAL;
-    const frequency = FluidLayerSettings.FREQUENCY_NORMAL;
+    const frequency = meterRadius / 11;
 
     switch (configuration.horizontalSpeed) {
       case Speed.FAST:
@@ -69,13 +69,14 @@ abstract class FluidLayerHelper {
     }
 
     const backgroundColor = ColorUtils.pSBC(-0.4, configuration.color);
+    const waveAmplitude = this.calculateWaveAmplitude(meterRadius);
 
     const foreGroundLayer: FluidLayer = {
       angle: 0,
       horizontalPosition: 0,
       color: configuration.color,
       frequency: frequency,
-      waveAmplitude: this.calculateWaveAmplitude(meterRadius),
+      waveAmplitude: waveAmplitude,
       horizontalSpeed: horizontalSpeed,
       waveSpeed: waveSpeed
     };
@@ -85,7 +86,7 @@ abstract class FluidLayerHelper {
       horizontalPosition: 0,
       color: backgroundColor ? backgroundColor : configuration.color,
       frequency: frequency,
-      waveAmplitude: this.calculateWaveAmplitude(meterRadius),
+      waveAmplitude: waveAmplitude,
       horizontalSpeed: -horizontalSpeed,
       waveSpeed: waveSpeed
     };
