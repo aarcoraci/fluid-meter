@@ -15,9 +15,7 @@ configurations.push({
   bubbleColor: '#6bcfff',
   fontSize: 60,
   fluidConfiguration: {
-    color: '#1e90ff',
-    horizontalSpeed: Speed.NORMAL,
-    waveSpeed: Speed.NORMAL
+    color: '#1e90ff'
   }
 });
 

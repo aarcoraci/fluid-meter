@@ -11,9 +11,9 @@ type FluidLayer = {
 };
 
 type FluidLayerConfiguration = {
-  color: string;
-  waveSpeed: Speed;
-  horizontalSpeed: Speed;
+  color?: string;
+  waveSpeed?: Speed;
+  horizontalSpeed?: Speed;
 };
 
 enum Speed {
@@ -66,13 +66,16 @@ abstract class FluidLayerHelper {
         break;
     }
 
-    const backgroundColor = ColorUtils.pSBC(-0.75, configuration.color);
+    const backgroundColor = ColorUtils.pSBC(
+      -0.75,
+      configuration.color || '#ffffff'
+    );
     const waveAmplitude = this.calculateWaveAmplitude(meterDiameter);
 
     const foreGroundLayer: FluidLayer = {
       angle: 0,
       horizontalPosition: 0,
-      color: configuration.color,
+      color: configuration.color || '#ffffff',
       frequency: frequency,
       waveAmplitude: waveAmplitude,
       horizontalSpeed: horizontalSpeed,
@@ -82,7 +85,9 @@ abstract class FluidLayerHelper {
     const backgroundLayer: FluidLayer = {
       angle: 0,
       horizontalPosition: 0,
-      color: backgroundColor ? backgroundColor : configuration.color,
+      color: backgroundColor
+        ? backgroundColor
+        : configuration.color || '#ffffff',
       frequency: frequency,
       waveAmplitude: waveAmplitude,
       horizontalSpeed: -horizontalSpeed,
