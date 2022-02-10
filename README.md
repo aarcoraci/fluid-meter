@@ -89,3 +89,11 @@ m.use3D = false;
 | use3D             | boolean                             |
 | dropShadow        | boolean                             |
 | progressFormatter | (value: number) => string           |
+
+##### performance
+
+If yo are using the library on a context where you will be adding it or removing it dynamically you should call dispose when removing it to correctly clear the animation:
+
+```js
+meter.dispose();
+```
