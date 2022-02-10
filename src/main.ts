@@ -105,50 +105,52 @@ configurations.push({
   }
 });
 
-const mainContainer = document.querySelector<HTMLDListElement>('.meters');
-configurations.forEach((configuration) => {
-  // create the DOM elements
-  const meterContainer = <HTMLDivElement>document.createElement('div');
-  meterContainer.classList.add('meter-container');
+document.addEventListener('DOMContentLoaded', function () {
+  const mainContainer = document.querySelector<HTMLDListElement>('.meters');
+  configurations.forEach((configuration) => {
+    // create the DOM elements
+    const meterContainer = <HTMLDivElement>document.createElement('div');
+    meterContainer.classList.add('meter-container');
 
-  mainContainer!.appendChild(meterContainer);
+    mainContainer!.appendChild(meterContainer);
 
-  const meterHTMLElement = <HTMLDivElement>document.createElement('div');
-  meterHTMLElement.classList.add('meter');
+    const meterHTMLElement = <HTMLDivElement>document.createElement('div');
+    meterHTMLElement.classList.add('meter');
 
-  meterContainer.appendChild(meterHTMLElement);
+    meterContainer.appendChild(meterHTMLElement);
 
-  const meter = new CircularFluidMeter(meterHTMLElement, configuration);
+    const meter = new CircularFluidMeter(meterHTMLElement, configuration);
 
-  const controlsContainer = <HTMLDivElement>document.createElement('div');
-  controlsContainer.classList.add('controls');
+    const controlsContainer = <HTMLDivElement>document.createElement('div');
+    controlsContainer.classList.add('controls');
 
-  const input = <HTMLInputElement>document.createElement('input');
-  input.setAttribute('type', 'number');
-  input.setAttribute('placeholder', 'change progress');
+    const input = <HTMLInputElement>document.createElement('input');
+    input.setAttribute('type', 'number');
+    input.setAttribute('placeholder', 'change progress');
 
-  const button = <HTMLButtonElement>document.createElement('button');
-  button.innerHTML = 'set';
+    const button = <HTMLButtonElement>document.createElement('button');
+    button.innerHTML = 'set';
 
-  button?.addEventListener('click', () => {
-    const progress = Number(input?.value);
-    if (progress) {
-      if (isNaN(progress)) {
-        alert('invalid progress. Number between 0 and 100');
-        return;
+    button?.addEventListener('click', () => {
+      const progress = Number(input?.value);
+      if (progress) {
+        if (isNaN(progress)) {
+          alert('invalid progress. Number between 0 and 100');
+          return;
+        }
+
+        if (progress < 0 || progress > 100) {
+          alert('invalid progress. Number between 0 and 100');
+          return;
+        }
+
+        meter.progress = progress;
       }
+    });
 
-      if (progress < 0 || progress > 100) {
-        alert('invalid progress. Number between 0 and 100');
-        return;
-      }
+    controlsContainer.appendChild(input);
+    controlsContainer.appendChild(button);
 
-      meter.progress = progress;
-    }
+    meterContainer.appendChild(controlsContainer);
   });
-
-  controlsContainer.appendChild(input);
-  controlsContainer.appendChild(button);
-
-  meterContainer.appendChild(controlsContainer);
 });

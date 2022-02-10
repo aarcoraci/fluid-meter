@@ -97,39 +97,41 @@ configurations.push({
         color: '#f8f8ff'
     }
 });
-const mainContainer = document.querySelector('.meters');
-configurations.forEach((configuration) => {
-    // create the DOM elements
-    const meterContainer = document.createElement('div');
-    meterContainer.classList.add('meter-container');
-    mainContainer.appendChild(meterContainer);
-    const meterHTMLElement = document.createElement('div');
-    meterHTMLElement.classList.add('meter');
-    meterContainer.appendChild(meterHTMLElement);
-    const meter = new CircularFluidMeter_1.CircularFluidMeter(meterHTMLElement, configuration);
-    const controlsContainer = document.createElement('div');
-    controlsContainer.classList.add('controls');
-    const input = document.createElement('input');
-    input.setAttribute('type', 'number');
-    input.setAttribute('placeholder', 'change progress');
-    const button = document.createElement('button');
-    button.innerHTML = 'set';
-    button === null || button === void 0 ? void 0 : button.addEventListener('click', () => {
-        const progress = Number(input === null || input === void 0 ? void 0 : input.value);
-        if (progress) {
-            if (isNaN(progress)) {
-                alert('invalid progress. Number between 0 and 100');
-                return;
+document.addEventListener('DOMContentLoaded', function () {
+    const mainContainer = document.querySelector('.meters');
+    configurations.forEach((configuration) => {
+        // create the DOM elements
+        const meterContainer = document.createElement('div');
+        meterContainer.classList.add('meter-container');
+        mainContainer.appendChild(meterContainer);
+        const meterHTMLElement = document.createElement('div');
+        meterHTMLElement.classList.add('meter');
+        meterContainer.appendChild(meterHTMLElement);
+        const meter = new CircularFluidMeter_1.CircularFluidMeter(meterHTMLElement, configuration);
+        const controlsContainer = document.createElement('div');
+        controlsContainer.classList.add('controls');
+        const input = document.createElement('input');
+        input.setAttribute('type', 'number');
+        input.setAttribute('placeholder', 'change progress');
+        const button = document.createElement('button');
+        button.innerHTML = 'set';
+        button === null || button === void 0 ? void 0 : button.addEventListener('click', () => {
+            const progress = Number(input === null || input === void 0 ? void 0 : input.value);
+            if (progress) {
+                if (isNaN(progress)) {
+                    alert('invalid progress. Number between 0 and 100');
+                    return;
+                }
+                if (progress < 0 || progress > 100) {
+                    alert('invalid progress. Number between 0 and 100');
+                    return;
+                }
+                meter.progress = progress;
             }
-            if (progress < 0 || progress > 100) {
-                alert('invalid progress. Number between 0 and 100');
-                return;
-            }
-            meter.progress = progress;
-        }
+        });
+        controlsContainer.appendChild(input);
+        controlsContainer.appendChild(button);
+        meterContainer.appendChild(controlsContainer);
     });
-    controlsContainer.appendChild(input);
-    controlsContainer.appendChild(button);
-    meterContainer.appendChild(controlsContainer);
 });
 //# sourceMappingURL=main.js.map
