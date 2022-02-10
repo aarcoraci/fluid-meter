@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 const CircularFluidMeter_1 = require("./meters/CircularFluidMeter/CircularFluidMeter");
 const FluidLayer_1 = require("./meters/CircularFluidMeter/Layers/FluidLayer");
-require("./style.css");
 const configurations = [];
 configurations.push({
     borderWidth: 22,

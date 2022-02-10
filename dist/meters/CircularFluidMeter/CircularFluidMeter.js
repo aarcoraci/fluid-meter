@@ -256,6 +256,9 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
     }
     draw() {
         this.clear();
+        if (this._meterDiameter <= 0 || !this._width || this._height) {
+            return;
+        }
         if (this._dropShadow) {
             this._context.save();
             this._context.beginPath();
