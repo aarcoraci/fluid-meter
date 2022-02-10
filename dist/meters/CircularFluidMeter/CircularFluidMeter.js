@@ -259,7 +259,9 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
         if (this._dropShadow) {
             this._context.save();
             this._context.beginPath();
-            this._context.filter = 'drop-shadow(0px 4px 6px rgba(0,0,0,0.45))';
+            this._context.shadowColor = '#000000';
+            this._context.shadowBlur = 10;
+            this._context.shadowOffsetY = 5;
             this._context.arc(this._width / 2, this._height / 2, this._meterDiameter / 2 - 1, 0, 2 * Math.PI);
             this._context.closePath();
             this._context.fill();
@@ -414,7 +416,8 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
         this._context.textAlign = 'center';
         this._context.textBaseline = 'middle';
         if (this._textDropShadow) {
-            this._context.filter = 'drop-shadow(0px 0px 5px rgba(0,0,0,0.4))';
+            this._context.shadowColor = '#000000';
+            this._context.shadowBlur = 7;
         }
         this._context.fillText(text, this._width / 2, this._height / 2);
         this._context.restore();
@@ -475,26 +478,29 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
         // details
         if (this._use3D) {
             this._context.save();
-            this._context.filter = 'blur(10px) blur(15px) opacity(0.65)';
-            let x = this._width / 2 - this._meterDiameter / 6;
-            let y = this._height / 2 - this._meterDiameter / 6;
-            let size = this._meterDiameter * 0.095;
-            this._context.fillStyle = 'white';
-            this._context.beginPath();
-            this._context.arc(x, y, size, 0, 2 * Math.PI);
-            this._context.closePath();
-            this._context.fill();
+            this._context.shadowColor = '#ffffff';
+            this._context.shadowBlur = 17;
+            const availableSurface = this._meterDiameter - this._calculatedBorderWidth;
+            let x = this._width / 2 - availableSurface / 4.5;
+            let y = this._height / 2 - availableSurface / 5.27;
+            let size = availableSurface * 0.045;
+            const shineTop = new Path2D();
+            shineTop.arc(-this._width * 2, y, size, 0, 2 * Math.PI);
+            this._context.shadowOffsetX = this._width * 2 + x;
+            this._context.globalAlpha = 0.7;
+            this._context.fill(shineTop);
             this._context.restore();
             this._context.save();
-            this._context.filter = 'blur(8px)  opacity(0.39)';
-            x = this._width / 2 + this._meterDiameter / 4.3;
-            y = this._height / 2 + this._meterDiameter / 4.3;
-            size = this._meterDiameter * 0.045;
-            this._context.fillStyle = 'white';
-            this._context.beginPath();
-            this._context.arc(x, y, size, 0, 2 * Math.PI);
-            this._context.closePath();
-            this._context.fill();
+            this._context.shadowColor = '#ffffff';
+            this._context.shadowBlur = 11;
+            x = this._width / 2 + availableSurface / 5;
+            y = this._height / 2 + availableSurface / 4;
+            size = availableSurface * 0.025;
+            const shineBottom = new Path2D();
+            shineBottom.arc(-this._width * 2, y, size, 0, 2 * Math.PI);
+            this._context.shadowOffsetX = this._width * 2 + x;
+            this._context.globalAlpha = 0.45;
+            this._context.fill(shineBottom);
             this._context.restore();
         }
     }
