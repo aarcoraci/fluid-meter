@@ -3,8 +3,6 @@ import { CircularFluidMeter } from './meters/CircularFluidMeter/CircularFluidMet
 import { CircularFluidMeterConfig } from './meters/CircularFluidMeter/CircularFluidMeterConfig';
 import { Speed } from './meters/CircularFluidMeter/Layers/FluidLayer';
 
-import './style.css';
-
 const configurations: Partial<CircularFluidMeterConfig>[] = [];
 
 configurations.push({
