@@ -399,8 +399,8 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
         if (this._use3D && canUse3d) {
             const x1 = this._width / 2;
             const y1 = meterBottom;
-            const r1 = this._meterDiameter * 0.01;
-            const gradientBackgroundFill = this._context.createRadialGradient(x1, y1, r1, x1, y1, this._meterDiameter * 0.45);
+            const r1 = this._meterDiameter * 0.05;
+            const gradientBackgroundFill = this._context.createRadialGradient(x1, y1, r1, x1, y1, this._meterDiameter * 0.65);
             const startColor = layer.color;
             const endColor = ColorUtils_1.ColorUtils.pSBC(-0.8, layer.color);
             gradientBackgroundFill.addColorStop(0, startColor);

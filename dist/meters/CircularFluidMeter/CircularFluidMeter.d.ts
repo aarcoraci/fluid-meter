@@ -53,7 +53,7 @@ declare class CircularFluidMeter extends BaseMeter {
     set dropShadow(drop: boolean);
     private _progressFormatter;
     set progressFormatter(formatter: (value: number) => string);
-    constructor(container: HTMLElement, config?: Partial<CircularFluidMeterConfig>);
+    constructor(container: HTMLElement, config?: CircularFluidMeterConfig);
     protected draw(): void;
     private clear;
     /**
