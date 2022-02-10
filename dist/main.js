@@ -102,17 +102,15 @@ const createMeter = (container, config) => {
     const button = container.querySelector('button');
     button === null || button === void 0 ? void 0 : button.addEventListener('click', () => {
         const progress = Number(input === null || input === void 0 ? void 0 : input.value);
-        if (progress) {
-            if (isNaN(progress)) {
-                alert('invalid progress. Number between 0 and 100');
-                return;
-            }
-            if (progress < 0 || progress > 100) {
-                alert('invalid progress. Number between 0 and 100');
-                return;
-            }
-            meter.progress = progress;
+        if (isNaN(progress)) {
+            alert('invalid progress. Number between 0 and 100');
+            return;
         }
+        if (progress < 0 || progress > 100) {
+            alert('invalid progress. Number between 0 and 100');
+            return;
+        }
+        meter.progress = progress;
     });
 };
 document.addEventListener('DOMContentLoaded', function () {

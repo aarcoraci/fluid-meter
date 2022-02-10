@@ -31,6 +31,7 @@ class CircularFluidMeter extends BaseMeter {
     if (value > 100 || value < 0) {
       return;
     }
+
     this._targetProgress = value;
   }
 
@@ -324,8 +325,14 @@ class CircularFluidMeter extends BaseMeter {
 
   // returns the line where the fluid makes waves
   private getFluidLevel(): number {
+    let waveAmplitudeCalculation = 0;
+    if (this._layers) {
+      waveAmplitudeCalculation = this._layers[0].waveAmplitude / 2;
+    }
     const meterFillPercentage =
-      ((this._meterDiameter - this._calculatedBorderWidth * 2) *
+      ((this._meterDiameter -
+        waveAmplitudeCalculation -
+        this._calculatedBorderWidth * 2) *
         this._progress) /
       100;
     return this.getMeterBottomLimit() - meterFillPercentage;
