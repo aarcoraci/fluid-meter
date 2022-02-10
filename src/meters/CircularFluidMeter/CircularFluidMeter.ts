@@ -181,7 +181,7 @@ class CircularFluidMeter extends BaseMeter {
   protected draw(): void {
     this.clear();
 
-    if (this._meterDiameter <= 0 || !this._width || this._height) {
+    if (this._meterDiameter <= 0 || !this._width || !this._height) {
       return;
     }
 
