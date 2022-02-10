@@ -3,7 +3,7 @@ import { CircularFluidMeter } from './meters/CircularFluidMeter/CircularFluidMet
 import { CircularFluidMeterConfig } from './meters/CircularFluidMeter/CircularFluidMeterConfig';
 import { Speed } from './meters/CircularFluidMeter/Layers/FluidLayer';
 
-const configurations: Partial<CircularFluidMeterConfig>[] = [];
+const configurations: CircularFluidMeterConfig[] = [];
 
 configurations.push({
   borderWidth: 22,
@@ -105,7 +105,7 @@ configurations.push({
 
 const createMeter = (
   container: HTMLDivElement,
-  config: Partial<CircularFluidMeterConfig>
+  config: CircularFluidMeterConfig
 ): void => {
   const meter = new CircularFluidMeter(
     container.querySelector<HTMLDivElement>('.meter')!,

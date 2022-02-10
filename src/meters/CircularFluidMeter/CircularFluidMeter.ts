@@ -147,10 +147,7 @@ class CircularFluidMeter extends BaseMeter {
     this._progressFormatter = formatter;
   }
 
-  constructor(
-    container: HTMLElement,
-    config?: Partial<CircularFluidMeterConfig>
-  ) {
+  constructor(container: HTMLElement, config?: CircularFluidMeterConfig) {
     super(container);
     const computedConfig: Required<CircularFluidMeterConfig> = {
       ...defaultConfig,
@@ -375,14 +372,14 @@ class CircularFluidMeter extends BaseMeter {
     if (this._use3D && canUse3d) {
       const x1 = this._width / 2;
       const y1 = meterBottom;
-      const r1 = this._meterDiameter * 0.01;
+      const r1 = this._meterDiameter * 0.05;
       const gradientBackgroundFill = this._context.createRadialGradient(
         x1,
         y1,
         r1,
         x1,
         y1,
-        this._meterDiameter * 0.45
+        this._meterDiameter * 0.65
       );
       const startColor = layer.color;
       const endColor = ColorUtils.pSBC(-0.8, layer.color);
