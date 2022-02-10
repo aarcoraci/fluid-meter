@@ -344,11 +344,15 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
     }
     // bottom limit where fluid gets drawn
     getMeterBottomLimit() {
-        return this._height - (this._height - this._meterDiameter) / 2;
+        return (this._height -
+            (this._height - this._meterDiameter) / 2 -
+            this._calculatedBorderWidth);
     }
     // returns the line where the fluid makes waves
     getFluidLevel() {
-        const meterFillPercentage = (this._meterDiameter * this._progress) / 100;
+        const meterFillPercentage = ((this._meterDiameter - this._calculatedBorderWidth * 2) *
+            this._progress) /
+            100;
         return this.getMeterBottomLimit() - meterFillPercentage;
     }
     drawLayer(layer, canUse3d = true) {
