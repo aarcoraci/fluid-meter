@@ -29,6 +29,36 @@ new CircularFluidMeter(target, {
 });
 ```
 
+#### responsiveness
+
+The library is prepared to work on a responsive scenario if needed:
+
+```js
+const config = {
+  initialProgress: 75,
+  borderWidth: [
+    {
+      resolution: 0,
+      value: 15
+    },
+    {
+      resolution: 1024,
+      value: 60
+    }
+  ],
+  fontSize: [
+    {
+      resolution: 0,
+      value: 25
+    },
+    {
+      resolution: 768,
+      value: 50
+    }
+  ]
+};
+```
+
 #### Configuration
 
 Here are some examples on how to use it. It's with typescript but should be the same with plain javascript.
