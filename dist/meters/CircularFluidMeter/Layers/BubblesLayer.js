@@ -92,7 +92,17 @@ class BubblesLayer {
     }
     resetBubble(bubble) {
         this.bubbles = this.bubbles.filter((b) => b !== bubble);
-        this.bubbles.push(this.getBubble());
+        if (this.bubbles.length < this.total) {
+            this.bubbles.push(this.getBubble());
+        }
+    }
+    updateBubbleCount() {
+        if (this.bubbles.length < this.total) {
+            const missing = this.total - this.bubbles.length;
+            for (let i = 0; i < missing; i++) {
+                this.bubbles.push(this.getBubble());
+            }
+        }
     }
     reset() {
         this.bubbles = [];

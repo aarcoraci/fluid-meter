@@ -219,6 +219,7 @@ class CircularFluidMeter extends BaseMeter {
       this.drawLayer(this._layers[1]);
     }
     if (this._showBubbles) {
+      this._bubbles.updateBubbleCount();
       this.drawBubbles();
     }
     if (this._showProgress) {
@@ -298,6 +299,18 @@ class CircularFluidMeter extends BaseMeter {
     this._bubbles.averageSize = this._meterDiameter * 0.006;
     this._bubbles.averageSpeed = (this._meterDiameter * 2) / 14; // should take X seconds to go from bottom to top
     this._bubbles.speedDeviation = this._bubbles.averageSpeed * 0.25;
+
+    // calculate the amount of bubbles depending on the fill percentage
+    let maxBubbles = this._width * 0.1;
+    if (this._progress < 50 && this._progress >= 25) {
+      maxBubbles = maxBubbles * 0.5;
+    } else if (this._progress < 25 && this._progress >= 12) {
+      maxBubbles = maxBubbles * 0.18;
+    } else if (this._progress < 12) {
+      maxBubbles = maxBubbles * 0.04;
+    }
+
+    this._bubbles.total = maxBubbles;
   }
 
   // bottom limit where fluid gets drawn

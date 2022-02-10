@@ -13,6 +13,7 @@ declare class BubblesLayer {
     yThreshold: number;
     getBubble(): BubbleParticle;
     resetBubble(bubble: BubbleParticle): void;
+    updateBubbleCount(): void;
     reset(): void;
 }
 declare class BubbleParticle {
