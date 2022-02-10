@@ -105,52 +105,57 @@ configurations.push({
   }
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-  const mainContainer = document.querySelector<HTMLDListElement>('.meters');
-  configurations.forEach((configuration) => {
-    // create the DOM elements
-    const meterContainer = <HTMLDivElement>document.createElement('div');
-    meterContainer.classList.add('meter-container');
-
-    mainContainer!.appendChild(meterContainer);
-
-    const meterHTMLElement = <HTMLDivElement>document.createElement('div');
-    meterHTMLElement.classList.add('meter');
-
-    meterContainer.appendChild(meterHTMLElement);
-
-    const meter = new CircularFluidMeter(meterHTMLElement, configuration);
-
-    const controlsContainer = <HTMLDivElement>document.createElement('div');
-    controlsContainer.classList.add('controls');
-
-    const input = <HTMLInputElement>document.createElement('input');
-    input.setAttribute('type', 'number');
-    input.setAttribute('placeholder', 'change progress');
-
-    const button = <HTMLButtonElement>document.createElement('button');
-    button.innerHTML = 'set';
-
-    button?.addEventListener('click', () => {
-      const progress = Number(input?.value);
-      if (progress) {
-        if (isNaN(progress)) {
-          alert('invalid progress. Number between 0 and 100');
-          return;
-        }
-
-        if (progress < 0 || progress > 100) {
-          alert('invalid progress. Number between 0 and 100');
-          return;
-        }
-
-        meter.progress = progress;
+const createMeter = (
+  container: HTMLDivElement,
+  config: Partial<CircularFluidMeterConfig>
+): void => {
+  const meter = new CircularFluidMeter(
+    container.querySelector<HTMLDivElement>('.meter')!,
+    config
+  );
+  const input = container.querySelector<HTMLInputElement>('input');
+  const button = container.querySelector<HTMLButtonElement>('button');
+  button?.addEventListener('click', () => {
+    const progress = Number(input?.value);
+    if (progress) {
+      if (isNaN(progress)) {
+        alert('invalid progress. Number between 0 and 100');
+        return;
       }
-    });
 
-    controlsContainer.appendChild(input);
-    controlsContainer.appendChild(button);
+      if (progress < 0 || progress > 100) {
+        alert('invalid progress. Number between 0 and 100');
+        return;
+      }
 
-    meterContainer.appendChild(controlsContainer);
+      meter.progress = progress;
+    }
   });
+};
+
+document.addEventListener('DOMContentLoaded', function () {
+  createMeter(
+    document.querySelector<HTMLDivElement>('#meter-1')!,
+    configurations[0]
+  );
+  createMeter(
+    document.querySelector<HTMLDivElement>('#meter-2')!,
+    configurations[1]
+  );
+  createMeter(
+    document.querySelector<HTMLDivElement>('#meter-3')!,
+    configurations[2]
+  );
+  createMeter(
+    document.querySelector<HTMLDivElement>('#meter-4')!,
+    configurations[3]
+  );
+  createMeter(
+    document.querySelector<HTMLDivElement>('#meter-5')!,
+    configurations[4]
+  );
+  createMeter(
+    document.querySelector<HTMLDivElement>('#meter-6')!,
+    configurations[5]
+  );
 });

@@ -97,41 +97,31 @@ configurations.push({
         color: '#f8f8ff'
     }
 });
-document.addEventListener('DOMContentLoaded', function () {
-    const mainContainer = document.querySelector('.meters');
-    configurations.forEach((configuration) => {
-        // create the DOM elements
-        const meterContainer = document.createElement('div');
-        meterContainer.classList.add('meter-container');
-        mainContainer.appendChild(meterContainer);
-        const meterHTMLElement = document.createElement('div');
-        meterHTMLElement.classList.add('meter');
-        meterContainer.appendChild(meterHTMLElement);
-        const meter = new CircularFluidMeter_1.CircularFluidMeter(meterHTMLElement, configuration);
-        const controlsContainer = document.createElement('div');
-        controlsContainer.classList.add('controls');
-        const input = document.createElement('input');
-        input.setAttribute('type', 'number');
-        input.setAttribute('placeholder', 'change progress');
-        const button = document.createElement('button');
-        button.innerHTML = 'set';
-        button === null || button === void 0 ? void 0 : button.addEventListener('click', () => {
-            const progress = Number(input === null || input === void 0 ? void 0 : input.value);
-            if (progress) {
-                if (isNaN(progress)) {
-                    alert('invalid progress. Number between 0 and 100');
-                    return;
-                }
-                if (progress < 0 || progress > 100) {
-                    alert('invalid progress. Number between 0 and 100');
-                    return;
-                }
-                meter.progress = progress;
+const createMeter = (container, config) => {
+    const meter = new CircularFluidMeter_1.CircularFluidMeter(container.querySelector('.meter'), config);
+    const input = container.querySelector('input');
+    const button = container.querySelector('button');
+    button === null || button === void 0 ? void 0 : button.addEventListener('click', () => {
+        const progress = Number(input === null || input === void 0 ? void 0 : input.value);
+        if (progress) {
+            if (isNaN(progress)) {
+                alert('invalid progress. Number between 0 and 100');
+                return;
             }
-        });
-        controlsContainer.appendChild(input);
-        controlsContainer.appendChild(button);
-        meterContainer.appendChild(controlsContainer);
+            if (progress < 0 || progress > 100) {
+                alert('invalid progress. Number between 0 and 100');
+                return;
+            }
+            meter.progress = progress;
+        }
     });
+};
+document.addEventListener('DOMContentLoaded', function () {
+    createMeter(document.querySelector('#meter-1'), configurations[0]);
+    createMeter(document.querySelector('#meter-2'), configurations[1]);
+    createMeter(document.querySelector('#meter-3'), configurations[2]);
+    createMeter(document.querySelector('#meter-4'), configurations[3]);
+    createMeter(document.querySelector('#meter-5'), configurations[4]);
+    createMeter(document.querySelector('#meter-6'), configurations[5]);
 });
 //# sourceMappingURL=main.js.map
