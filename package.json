@@ -28,7 +28,7 @@
     "liquid-gauge"
   ],
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "tsc && vite build",
     "ts-build": "tsc"
   },
