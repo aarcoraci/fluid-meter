@@ -3,7 +3,7 @@ import { FluidLayerConfiguration } from './Layers/FluidLayer';
 declare type CircularFluidMeterConfig = {
     initialProgress?: number;
     borderWidth?: number | BreakpointValueConfig[];
-    borderColor: string;
+    borderColor?: string;
     padding?: number;
     backgroundColor?: string;
     showProgress?: boolean;
@@ -11,7 +11,7 @@ declare type CircularFluidMeterConfig = {
     bubbleColor?: string;
     textColor?: string;
     textDropShadow?: boolean;
-    fluidConfiguration: FluidLayerConfiguration;
+    fluidConfiguration?: FluidLayerConfiguration;
     fontFamily?: string;
     fontSize?: number | BreakpointValueConfig[];
     use3D?: boolean;
