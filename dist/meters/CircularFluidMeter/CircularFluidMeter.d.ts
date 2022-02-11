@@ -40,8 +40,8 @@ declare class CircularFluidMeter extends BaseMeter {
     get textDropShadow(): boolean;
     set textDropShadow(dropShadow: boolean);
     private _textShadowOpacity;
-    get textDropShadowOpacity(): number;
-    set textDropShadowOpacity(alphaLevel: number);
+    get textShadowOpacity(): number;
+    set textShadowOpacity(alphaLevel: number);
     private _textShadowColor;
     get textShadowColor(): string;
     set textShadowColor(color: string);

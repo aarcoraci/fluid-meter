@@ -109,10 +109,10 @@ class CircularFluidMeter extends BaseMeter {
   }
 
   private _textShadowOpacity: number;
-  public get textDropShadowOpacity() {
+  public get textShadowOpacity() {
     return this._textShadowOpacity;
   }
-  public set textDropShadowOpacity(alphaLevel: number) {
+  public set textShadowOpacity(alphaLevel: number) {
     this._textShadowOpacity = clamp(alphaLevel, 0, 1);
   }
 

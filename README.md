@@ -79,10 +79,13 @@ https://github.com/aarcoraci/fluid-meter/blob/main/src/main.ts
 | bubbleColor        | string                          | #ffffff                                                                  | color of the bubbles                                                                             |
 | textColor          | string                          | #ffffff                                                                  | text color                                                                                       |
 | textDropShadow     | boolean                         | true                                                                     | text has a small shadow. Helps when colors are too similar or on difficult contrasting scenarios |
+| textShadowOpacity  | number                          | 1                                                                        | intensity of the shadow between 0 and 1: 0 invisible and 1 fully visible                         |
+| textShadowColor    | string                          | #000000                                                                  | text shadow color                                                                                |
 | fontFamily         | string                          | Arial                                                                    | name of the typeface to use                                                                      |
 | fontSize           | number or BreakpointValueConfig | 30                                                                       | tex size. Can be a number of an array of breakpoint value configs                                |
 | use3D              | boolean                         | true                                                                     | enables details that gives the impresion of depth                                                |
-| dropShadow         | boolean                         | true                                                                     | meter drops shadow. Requires some padding to show correctly                                      |
+| dropShadow         | boolean                         | true                                                                     | meter shadow color                                                                               |
+| dropShadowColor    | string                          | #000000                                                                  | meter drops shadow. Requires some padding to show correctly                                      |
 | progressFormatter  | (value: number) => string       | (value: number) => Math.round(value).toString()                          | a function that transforms the value shown in the center of the meter                            |
 | fluidConfiguration | FluidLayerConfiguration         | {color: '#ff0000',waveSpeed: Speed.NORMAL,horizontalSpeed: Speed.NORMAL} | values of the fluid being displayed                                                              |
 
@@ -117,11 +120,14 @@ m.use3D = false;
 | fontFamily                      | string                              |
 | fontSize                        | number or BreakpointValueConfig\[\] |
 | textDropShadow                  | boolean                             |
+| textShadowOpacity               | number (between 0 and 1)            |
+| textShadowColor                 | string                              |
 | showProgress                    | boolean                             |
 | showBubbles                     | boolean                             |
 | bubbleColor                     | string                              |
 | use3D                           | boolean                             |
 | dropShadow                      | boolean                             |
+| dropShadowColor                 | string                              |
 | progressFormatter (only getter) | (value: number) => string           |
 
 ##### performance

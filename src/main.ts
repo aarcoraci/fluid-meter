@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
     configurations[1]
   );
   m2.textShadowColor = '#589100';
-  m2.textDropShadowOpacity = 0.4;
+  m2.textShadowOpacity = 0.4;
 
   const m3 = createMeter(
     document.querySelector<HTMLDivElement>('#meter-3')!,

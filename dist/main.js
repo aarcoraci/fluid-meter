@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
     createMeter(document.querySelector('#meter-1'), configurations[0]);
     const m2 = createMeter(document.querySelector('#meter-2'), configurations[1]);
     m2.textShadowColor = '#589100';
-    m2.textDropShadowOpacity = 0.4;
+    m2.textShadowOpacity = 0.4;
     const m3 = createMeter(document.querySelector('#meter-3'), configurations[2]);
     m3.dropShadowColor = '#ff4500';
     createMeter(document.querySelector('#meter-4'), configurations[3]);
