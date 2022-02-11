@@ -7,6 +7,7 @@ const FluidLayer_1 = require("./Layers/FluidLayer");
 const ColorUtils_1 = require("../../utils/ColorUtils");
 const CircularFluidMeterConfig_1 = require("./CircularFluidMeterConfig");
 const ResponsiveUtils_1 = require("../../utils/ResponsiveUtils");
+const MathUtils_1 = require("../../utils/MathUtils");
 class CircularFluidMeter extends BaseMeter_1.BaseMeter {
     constructor(container, config) {
         super(container);
@@ -45,6 +46,19 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
             configurable: true,
             writable: true,
             value: void 0
+        });
+        Object.defineProperty(this, "_maxProgress", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        // computed value used to animate the variation of fluid when the progress changes
+        Object.defineProperty(this, "_progressStepSpeed", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: 0
         });
         Object.defineProperty(this, "_calculatedBorderWidth", {
             enumerable: true,
@@ -143,10 +157,11 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
             value: (value) => `${value}%`
         });
         const computedConfig = Object.assign(Object.assign({}, CircularFluidMeterConfig_1.defaultConfig), config);
+        this._progress = computedConfig.initialProgress;
+        this._maxProgress = computedConfig.maxProgress;
         this._borderWidth = computedConfig.borderWidth;
         this._borderColor = computedConfig.borderColor;
         this._padding = computedConfig.padding;
-        this._progress = computedConfig.initialProgress;
         this._targetProgress = this._progress;
         this._backgroundColor = computedConfig.backgroundColor;
         this._fluidConfiguration = computedConfig.fluidConfiguration;
@@ -166,10 +181,10 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
         return this._progress;
     }
     set progress(value) {
-        if (value > 100 || value < 0) {
-            return;
-        }
-        this._targetProgress = value;
+        this._targetProgress = (0, MathUtils_1.clamp)(value, 0, this._maxProgress);
+    }
+    get maxProgress() {
+        return this._maxProgress;
     }
     get borderWidth() {
         return this._borderWidth;
@@ -303,6 +318,8 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
     calculateDrawingValues() {
         this._meterDiameter = this.calculateMeterDiameter();
         this._layers = FluidLayer_1.FluidLayerHelper.buildFluidLayersFromConfiguration(this._fluidConfiguration, this._meterDiameter);
+        // other computed values
+        this._progressStepSpeed = this._maxProgress / 6;
         // responsive (if required)
         const screenWidth = window.innerWidth;
         if (typeof this._borderWidth == 'number') {
@@ -371,9 +388,32 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
             waveAmplitudeCalculation -
             this._calculatedBorderWidth * 2) *
             this._progress) /
-            100;
+            this._maxProgress;
         return this.getMeterBottomLimit() - meterFillPercentage;
     }
+    updateProgress() {
+        if (this._progress === this._targetProgress) {
+            return;
+        }
+        if (this._progress < this._targetProgress) {
+            this._progress += this._progressStepSpeed * this._elapsed;
+            if (this._progress > this._targetProgress) {
+                this._progress = this._targetProgress;
+            }
+        }
+        else if (this._progress > this._targetProgress) {
+            this._progress -= this._progressStepSpeed * this._elapsed;
+            if (this._progress < this._targetProgress) {
+                this._progress = this._targetProgress;
+            }
+        }
+        this.updateBubbleLayer();
+    }
+    /**
+     * draws a fluid layer
+     * @param layer layer to draw
+     * @param canUse3d will add gradients and details to give an impression of depth
+     */
     drawLayer(layer, canUse3d = true) {
         // calculate wave angle
         let angle = layer.angle + layer.waveSpeed * this._elapsed;
@@ -388,20 +428,7 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
         const amplitude = layer.waveAmplitude * Math.sin(layer.angle);
         const meterBottom = this.getMeterBottomLimit();
         const fluidAmount = this.getFluidLevel();
-        if (this._progress < this._targetProgress) {
-            this._progress += 15 * this._elapsed;
-            if (this._progress > this._targetProgress) {
-                this._progress = this._targetProgress;
-            }
-            this.updateBubbleLayer();
-        }
-        else if (this._progress > this._targetProgress) {
-            this._progress -= 15 * this._elapsed;
-            if (this._progress < this._targetProgress) {
-                this._progress = this._targetProgress;
-            }
-            this.updateBubbleLayer();
-        }
+        this.updateProgress();
         this._context.save();
         this._context.beginPath();
         this._context.lineTo(0, fluidAmount);

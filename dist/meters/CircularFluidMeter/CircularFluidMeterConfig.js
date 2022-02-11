@@ -4,11 +4,8 @@ exports.defaultConfig = void 0;
 const FluidLayer_1 = require("./Layers/FluidLayer");
 const defaultConfig = {
     initialProgress: 0,
-    borderWidth: [
-        { resolution: 0, value: 10 },
-        { resolution: 768, value: 15 },
-        { resolution: 1440, value: 30 }
-    ],
+    maxProgress: 100,
+    borderWidth: 30,
     borderColor: '#75758b',
     padding: 30,
     backgroundColor: '#9f9fae',
@@ -18,12 +15,7 @@ const defaultConfig = {
     textColor: '#ffffff',
     textDropShadow: true,
     fontFamily: 'Arial',
-    fontSize: [
-        { resolution: 0, value: 13 },
-        { resolution: 320, value: 30 },
-        { resolution: 718, value: 90 },
-        { resolution: 1440, value: 95 }
-    ],
+    fontSize: 30,
     use3D: true,
     dropShadow: true,
     progressFormatter: (value) => Math.round(value).toString(),

@@ -10,6 +10,9 @@ declare class CircularFluidMeter extends BaseMeter {
     private _progress;
     get progress(): number;
     set progress(value: number);
+    private _maxProgress;
+    get maxProgress(): number;
+    private _progressStepSpeed;
     private _calculatedBorderWidth;
     private _borderWidth;
     get borderWidth(): number | BreakpointValueConfig[];
@@ -65,6 +68,12 @@ declare class CircularFluidMeter extends BaseMeter {
     private updateBubbleLayer;
     private getMeterBottomLimit;
     private getFluidLevel;
+    private updateProgress;
+    /**
+     * draws a fluid layer
+     * @param layer layer to draw
+     * @param canUse3d will add gradients and details to give an impression of depth
+     */
     private drawLayer;
     private drawText;
     private drawBackground;

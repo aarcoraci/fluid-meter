@@ -6,7 +6,8 @@ const FluidLayer_1 = require("./meters/CircularFluidMeter/Layers/FluidLayer");
 const configurations = [];
 configurations.push({
     borderWidth: 22,
-    initialProgress: 75,
+    initialProgress: 165,
+    maxProgress: 250,
     backgroundColor: '#002d59',
     borderColor: '#3e4954',
     bubbleColor: '#6bcfff',
@@ -52,13 +53,17 @@ configurations.push({
 });
 configurations.push({
     initialProgress: 25,
+    maxProgress: 500,
     borderColor: '#dadada',
     backgroundColor: '#dadada',
     showBubbles: true,
     borderWidth: 22,
     dropShadow: false,
     padding: 0,
-    fontSize: 65,
+    fontSize: 34,
+    progressFormatter: (value) => {
+        return `${value.toFixed(0)} / 500`;
+    },
     fluidConfiguration: {
         color: '#800080'
     }
@@ -103,10 +108,6 @@ const createMeter = (container, config) => {
     button === null || button === void 0 ? void 0 : button.addEventListener('click', () => {
         const progress = Number(input === null || input === void 0 ? void 0 : input.value);
         if (isNaN(progress)) {
-            alert('invalid progress. Number between 0 and 100');
-            return;
-        }
-        if (progress < 0 || progress > 100) {
             alert('invalid progress. Number between 0 and 100');
             return;
         }

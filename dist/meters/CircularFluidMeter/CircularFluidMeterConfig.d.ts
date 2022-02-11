@@ -2,6 +2,7 @@ import { BreakpointValueConfig } from '../../utils/ResponsiveUtils';
 import { FluidLayerConfiguration } from './Layers/FluidLayer';
 declare type CircularFluidMeterConfig = {
     initialProgress?: number;
+    maxProgress?: number;
     borderWidth?: number | BreakpointValueConfig[];
     borderColor?: string;
     padding?: number;
