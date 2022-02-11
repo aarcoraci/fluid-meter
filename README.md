@@ -84,14 +84,14 @@ https://github.com/aarcoraci/fluid-meter/blob/main/src/main.ts
 | fontFamily         | string                          | Arial                                                                    | name of the typeface to use                                                                      |
 | fontSize           | number or BreakpointValueConfig | 30                                                                       | tex size. Can be a number of an array of breakpoint value configs                                |
 | use3D              | boolean                         | true                                                                     | enables details that gives the impresion of depth                                                |
-| dropShadow         | boolean                         | true                                                                     | meter shadow color                                                                               |
-| dropShadowColor    | string                          | #000000                                                                  | meter drops shadow. Requires some padding to show correctly                                      |
+| dropShadow         | boolean                         | true                                                                     | meter drops shadow. Requires some padding to show correctly                                      |
+| dropShadowColor    | string                          | #000000                                                                  | meter shadow color                                                                               |
 | progressFormatter  | (value: number) => string       | (value: number) => Math.round(value).toString()                          | a function that transforms the value shown in the center of the meter                            |
 | fluidConfiguration | FluidLayerConfiguration         | {color: '#ff0000',waveSpeed: Speed.NORMAL,horizontalSpeed: Speed.NORMAL} | values of the fluid being displayed                                                              |
 
 #### API and Methods
 
-##### example:
+##### Example:
 
 ```js
 import { CircularFluidMeter } from 'fluid-meter';
@@ -106,7 +106,7 @@ m.dropShadow = false;
 m.use3D = false;
 ```
 
-##### list of setters and getters
+##### List of setters and getters
 
 | setter / getter                 | info                                |
 | ------------------------------- | ----------------------------------- |
@@ -130,7 +130,7 @@ m.use3D = false;
 | dropShadowColor                 | string                              |
 | progressFormatter (only getter) | (value: number) => string           |
 
-##### performance
+##### Performance
 
 If yo are using the library on a context where you will be adding it or removing it dynamically you should call dispose when removing it to correctly clear the animation:
 
