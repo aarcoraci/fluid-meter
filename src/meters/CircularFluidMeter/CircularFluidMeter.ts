@@ -14,6 +14,7 @@ import {
   BreakpointValueConfig,
   getResponsiveValue
 } from '../../utils/ResponsiveUtils';
+import { clamp } from '../../utils/MathUtils';
 
 class CircularFluidMeter extends BaseMeter {
   private _fluidConfiguration: FluidLayerConfiguration;
@@ -28,12 +29,16 @@ class CircularFluidMeter extends BaseMeter {
     return this._progress;
   }
   public set progress(value: number) {
-    if (value > 100 || value < 0) {
-      return;
-    }
-
-    this._targetProgress = value;
+    this._targetProgress = clamp(value, 0, this._maxProgress);
   }
+
+  private _maxProgress: number;
+  public get maxProgress() {
+    return this._maxProgress;
+  }
+
+  // computed value used to animate the variation of fluid when the progress changes
+  private _progressStepSpeed = 0;
 
   private _calculatedBorderWidth = 0;
   private _borderWidth: number | BreakpointValueConfig[];
@@ -155,10 +160,11 @@ class CircularFluidMeter extends BaseMeter {
       ...config
     };
 
+    this._progress = computedConfig.initialProgress;
+    this._maxProgress = computedConfig.maxProgress;
     this._borderWidth = computedConfig.borderWidth;
     this._borderColor = computedConfig.borderColor;
     this._padding = computedConfig.padding;
-    this._progress = computedConfig.initialProgress;
     this._targetProgress = this._progress;
     this._backgroundColor = computedConfig.backgroundColor;
     this._fluidConfiguration = computedConfig.fluidConfiguration;
@@ -251,6 +257,9 @@ class CircularFluidMeter extends BaseMeter {
       this._meterDiameter
     );
 
+    // other computed values
+    this._progressStepSpeed = this._maxProgress / 6;
+
     // responsive (if required)
     const screenWidth = window.innerWidth;
     if (typeof this._borderWidth == 'number') {
@@ -334,10 +343,33 @@ class CircularFluidMeter extends BaseMeter {
         waveAmplitudeCalculation -
         this._calculatedBorderWidth * 2) *
         this._progress) /
-      100;
+      this._maxProgress;
     return this.getMeterBottomLimit() - meterFillPercentage;
   }
 
+  private updateProgress(): void {
+    if (this._progress === this._targetProgress) {
+      return;
+    }
+    if (this._progress < this._targetProgress) {
+      this._progress += this._progressStepSpeed * this._elapsed;
+      if (this._progress > this._targetProgress) {
+        this._progress = this._targetProgress;
+      }
+    } else if (this._progress > this._targetProgress) {
+      this._progress -= this._progressStepSpeed * this._elapsed;
+      if (this._progress < this._targetProgress) {
+        this._progress = this._targetProgress;
+      }
+    }
+    this.updateBubbleLayer();
+  }
+
+  /**
+   * draws a fluid layer
+   * @param layer layer to draw
+   * @param canUse3d will add gradients and details to give an impression of depth
+   */
   private drawLayer(layer: FluidLayer, canUse3d = true) {
     // calculate wave angle
     let angle = layer.angle + layer.waveSpeed * this._elapsed;
@@ -357,19 +389,7 @@ class CircularFluidMeter extends BaseMeter {
     const meterBottom = this.getMeterBottomLimit();
     const fluidAmount = this.getFluidLevel();
 
-    if (this._progress < this._targetProgress) {
-      this._progress += 15 * this._elapsed;
-      if (this._progress > this._targetProgress) {
-        this._progress = this._targetProgress;
-      }
-      this.updateBubbleLayer();
-    } else if (this._progress > this._targetProgress) {
-      this._progress -= 15 * this._elapsed;
-      if (this._progress < this._targetProgress) {
-        this._progress = this._targetProgress;
-      }
-      this.updateBubbleLayer();
-    }
+    this.updateProgress();
 
     this._context.save();
     this._context.beginPath();
