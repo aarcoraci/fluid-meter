@@ -13,11 +13,14 @@ type CircularFluidMeterConfig = {
   bubbleColor?: string;
   textColor?: string;
   textDropShadow?: boolean;
+  textShadowOpacity?: number;
+  textShadowColor?: string;
   fluidConfiguration?: FluidLayerConfiguration;
   fontFamily?: string;
   fontSize?: number | BreakpointValueConfig[];
   use3D?: boolean;
   dropShadow?: boolean;
+  dropShadowColor?: string;
   progressFormatter?: (value: number) => string;
 };
 
@@ -33,10 +36,13 @@ const defaultConfig: Required<CircularFluidMeterConfig> = {
   bubbleColor: '#ffffff',
   textColor: '#ffffff',
   textDropShadow: true,
+  textShadowOpacity: 1,
+  textShadowColor: '#000000',
   fontFamily: 'Arial',
   fontSize: 30,
   use3D: true,
   dropShadow: true,
+  dropShadowColor: '#000000',
   progressFormatter: (value: number) => Math.round(value).toString(),
   fluidConfiguration: {
     color: '#ff0000',

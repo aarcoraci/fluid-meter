@@ -12,11 +12,14 @@ declare type CircularFluidMeterConfig = {
     bubbleColor?: string;
     textColor?: string;
     textDropShadow?: boolean;
+    textShadowOpacity?: number;
+    textShadowColor?: string;
     fluidConfiguration?: FluidLayerConfiguration;
     fontFamily?: string;
     fontSize?: number | BreakpointValueConfig[];
     use3D?: boolean;
     dropShadow?: boolean;
+    dropShadowColor?: string;
     progressFormatter?: (value: number) => string;
 };
 declare const defaultConfig: Required<CircularFluidMeterConfig>;

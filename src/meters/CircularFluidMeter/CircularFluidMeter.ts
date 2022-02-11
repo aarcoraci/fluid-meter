@@ -108,6 +108,22 @@ class CircularFluidMeter extends BaseMeter {
     this._textDropShadow = dropShadow;
   }
 
+  private _textShadowOpacity: number;
+  public get textDropShadowOpacity() {
+    return this._textShadowOpacity;
+  }
+  public set textDropShadowOpacity(alphaLevel: number) {
+    this._textShadowOpacity = clamp(alphaLevel, 0, 1);
+  }
+
+  private _textShadowColor: string;
+  public get textShadowColor() {
+    return this._textShadowColor;
+  }
+  public set textShadowColor(color: string) {
+    this._textShadowColor = color;
+  }
+
   private _showProgress = true;
   public get showProgress() {
     return this._showProgress;
@@ -148,6 +164,14 @@ class CircularFluidMeter extends BaseMeter {
     this._dropShadow = drop;
   }
 
+  private _dropShadowColor: string;
+  public get dropShadowColor() {
+    return this._dropShadowColor;
+  }
+  public set dropShadowColor(color: string) {
+    this._dropShadowColor = color;
+  }
+
   private _progressFormatter = (value: number): string => `${value}%`;
   public set progressFormatter(formatter: (value: number) => string) {
     this._progressFormatter = formatter;
@@ -170,6 +194,8 @@ class CircularFluidMeter extends BaseMeter {
     this._fluidConfiguration = computedConfig.fluidConfiguration;
     this._textColor = computedConfig.textColor;
     this._textDropShadow = computedConfig.textDropShadow;
+    this._textShadowColor = computedConfig.textShadowColor;
+    this._textShadowOpacity = computedConfig.textShadowOpacity;
     this._showProgress = computedConfig.showProgress;
     this._fontFamily = computedConfig.fontFamily;
     this._fontSize = computedConfig.fontSize;
@@ -177,6 +203,7 @@ class CircularFluidMeter extends BaseMeter {
     this._bubbleColor = computedConfig.bubbleColor;
     this._use3D = computedConfig.use3D;
     this._dropShadow = computedConfig.dropShadow;
+    this._dropShadowColor = computedConfig.dropShadowColor;
     this._progressFormatter = computedConfig.progressFormatter;
 
     this.calculateDrawingValues();
@@ -192,7 +219,7 @@ class CircularFluidMeter extends BaseMeter {
     if (this._dropShadow) {
       this._context.save();
       this._context.beginPath();
-      this._context.shadowColor = '#000000';
+      this._context.shadowColor = this._dropShadowColor;
       this._context.shadowBlur = 10;
       this._context.shadowOffsetY = 5;
       this._context.arc(
@@ -439,17 +466,22 @@ class CircularFluidMeter extends BaseMeter {
 
   private drawText(): void {
     const text = this._progressFormatter(this._progress);
-
     this._context.save();
-    this._context.font = `${this._calculatedFontSize}px ${this._fontFamily}`;
 
+    this._context.font = `${this._calculatedFontSize}px ${this._fontFamily}`;
     this._context.fillStyle = this._textColor;
     this._context.textAlign = 'center';
     this._context.textBaseline = 'middle';
+
     if (this._textDropShadow) {
-      this._context.shadowColor = '#000000';
+      this._context.save();
+      this._context.shadowColor = this._textShadowColor;
       this._context.shadowBlur = 7;
+      this._context.globalAlpha = this._textShadowOpacity;
+      this._context.fillText(text, this._width / 2, this._height / 2);
+      this._context.restore();
     }
+
     this._context.fillText(text, this._width / 2, this._height / 2);
 
     this._context.restore();

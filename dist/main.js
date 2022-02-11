@@ -23,6 +23,7 @@ configurations.push({
 configurations.push({
     borderColor: '#567656',
     initialProgress: 45,
+    fontSize: 90,
     backgroundColor: '#2d3d2d',
     textColor: '#80cd32',
     fontFamily: 'Creepster',
@@ -113,11 +114,15 @@ const createMeter = (container, config) => {
         }
         meter.progress = progress;
     });
+    return meter;
 };
 document.addEventListener('DOMContentLoaded', function () {
     createMeter(document.querySelector('#meter-1'), configurations[0]);
-    createMeter(document.querySelector('#meter-2'), configurations[1]);
-    createMeter(document.querySelector('#meter-3'), configurations[2]);
+    const m2 = createMeter(document.querySelector('#meter-2'), configurations[1]);
+    m2.textShadowColor = '#589100';
+    m2.textDropShadowOpacity = 0.4;
+    const m3 = createMeter(document.querySelector('#meter-3'), configurations[2]);
+    m3.dropShadowColor = '#ff4500';
     createMeter(document.querySelector('#meter-4'), configurations[3]);
     createMeter(document.querySelector('#meter-5'), configurations[4]);
     createMeter(document.querySelector('#meter-6'), configurations[5]);

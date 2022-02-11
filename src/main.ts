@@ -25,6 +25,7 @@ configurations.push({
 configurations.push({
   borderColor: '#567656',
   initialProgress: 45,
+  fontSize: 90,
   backgroundColor: '#2d3d2d',
   textColor: '#80cd32',
   fontFamily: 'Creepster',
@@ -111,7 +112,7 @@ configurations.push({
 const createMeter = (
   container: HTMLDivElement,
   config: CircularFluidMeterConfig
-): void => {
+): CircularFluidMeter => {
   const meter = new CircularFluidMeter(
     container.querySelector<HTMLDivElement>('.meter')!,
     config
@@ -127,6 +128,7 @@ const createMeter = (
 
     meter.progress = progress;
   });
+  return meter;
 };
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -134,14 +136,18 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector<HTMLDivElement>('#meter-1')!,
     configurations[0]
   );
-  createMeter(
+  const m2 = createMeter(
     document.querySelector<HTMLDivElement>('#meter-2')!,
     configurations[1]
   );
-  createMeter(
+  m2.textShadowColor = '#589100';
+  m2.textDropShadowOpacity = 0.4;
+
+  const m3 = createMeter(
     document.querySelector<HTMLDivElement>('#meter-3')!,
     configurations[2]
   );
+  m3.dropShadowColor = '#ff4500';
   createMeter(
     document.querySelector<HTMLDivElement>('#meter-4')!,
     configurations[3]

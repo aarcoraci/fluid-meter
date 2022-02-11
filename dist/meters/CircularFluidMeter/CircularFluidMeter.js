@@ -120,6 +120,18 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
             writable: true,
             value: true
         });
+        Object.defineProperty(this, "_textShadowOpacity", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "_textShadowColor", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         Object.defineProperty(this, "_showProgress", {
             enumerable: true,
             configurable: true,
@@ -150,6 +162,12 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
             writable: true,
             value: true
         });
+        Object.defineProperty(this, "_dropShadowColor", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         Object.defineProperty(this, "_progressFormatter", {
             enumerable: true,
             configurable: true,
@@ -167,6 +185,8 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
         this._fluidConfiguration = computedConfig.fluidConfiguration;
         this._textColor = computedConfig.textColor;
         this._textDropShadow = computedConfig.textDropShadow;
+        this._textShadowColor = computedConfig.textShadowColor;
+        this._textShadowOpacity = computedConfig.textShadowOpacity;
         this._showProgress = computedConfig.showProgress;
         this._fontFamily = computedConfig.fontFamily;
         this._fontSize = computedConfig.fontSize;
@@ -174,6 +194,7 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
         this._bubbleColor = computedConfig.bubbleColor;
         this._use3D = computedConfig.use3D;
         this._dropShadow = computedConfig.dropShadow;
+        this._dropShadowColor = computedConfig.dropShadowColor;
         this._progressFormatter = computedConfig.progressFormatter;
         this.calculateDrawingValues();
     }
@@ -236,6 +257,18 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
     set textDropShadow(dropShadow) {
         this._textDropShadow = dropShadow;
     }
+    get textDropShadowOpacity() {
+        return this._textShadowOpacity;
+    }
+    set textDropShadowOpacity(alphaLevel) {
+        this._textShadowOpacity = (0, MathUtils_1.clamp)(alphaLevel, 0, 1);
+    }
+    get textShadowColor() {
+        return this._textShadowColor;
+    }
+    set textShadowColor(color) {
+        this._textShadowColor = color;
+    }
     get showProgress() {
         return this._showProgress;
     }
@@ -266,6 +299,12 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
     set dropShadow(drop) {
         this._dropShadow = drop;
     }
+    get dropShadowColor() {
+        return this._dropShadowColor;
+    }
+    set dropShadowColor(color) {
+        this._dropShadowColor = color;
+    }
     set progressFormatter(formatter) {
         this._progressFormatter = formatter;
     }
@@ -277,7 +316,7 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
         if (this._dropShadow) {
             this._context.save();
             this._context.beginPath();
-            this._context.shadowColor = '#000000';
+            this._context.shadowColor = this._dropShadowColor;
             this._context.shadowBlur = 10;
             this._context.shadowOffsetY = 5;
             this._context.arc(this._width / 2, this._height / 2, this._meterDiameter / 2 - 1, 0, 2 * Math.PI);
@@ -469,8 +508,12 @@ class CircularFluidMeter extends BaseMeter_1.BaseMeter {
         this._context.textAlign = 'center';
         this._context.textBaseline = 'middle';
         if (this._textDropShadow) {
-            this._context.shadowColor = '#000000';
+            this._context.save();
+            this._context.shadowColor = this._textShadowColor;
             this._context.shadowBlur = 7;
+            this._context.globalAlpha = this._textShadowOpacity;
+            this._context.fillText(text, this._width / 2, this._height / 2);
+            this._context.restore();
         }
         this._context.fillText(text, this._width / 2, this._height / 2);
         this._context.restore();

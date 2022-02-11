@@ -39,6 +39,12 @@ declare class CircularFluidMeter extends BaseMeter {
     private _textDropShadow;
     get textDropShadow(): boolean;
     set textDropShadow(dropShadow: boolean);
+    private _textShadowOpacity;
+    get textDropShadowOpacity(): number;
+    set textDropShadowOpacity(alphaLevel: number);
+    private _textShadowColor;
+    get textShadowColor(): string;
+    set textShadowColor(color: string);
     private _showProgress;
     get showProgress(): boolean;
     set showProgress(show: boolean);
@@ -54,6 +60,9 @@ declare class CircularFluidMeter extends BaseMeter {
     private _dropShadow;
     get dropShadow(): boolean;
     set dropShadow(drop: boolean);
+    private _dropShadowColor;
+    get dropShadowColor(): string;
+    set dropShadowColor(color: string);
     private _progressFormatter;
     set progressFormatter(formatter: (value: number) => string);
     constructor(container: HTMLElement, config?: CircularFluidMeterConfig);
