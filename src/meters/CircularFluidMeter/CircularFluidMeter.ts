@@ -339,11 +339,17 @@ class CircularFluidMeter extends BaseMeter {
 
     // calculate the amount of bubbles depending on the fill percentage
     let maxBubbles = this._width * 0.1;
-    if (this._progress < 50 && this._progress >= 25) {
+    if (
+      this._progress < this._maxProgress * 0.5 &&
+      this._progress >= this._maxProgress * 0.25
+    ) {
       maxBubbles = maxBubbles * 0.5;
-    } else if (this._progress < 25 && this._progress >= 12) {
+    } else if (
+      this._progress < this._maxProgress * 0.25 &&
+      this._progress >= this._maxProgress * 0.12
+    ) {
       maxBubbles = maxBubbles * 0.18;
-    } else if (this._progress < 12) {
+    } else if (this._progress < this._maxProgress * 0.12) {
       maxBubbles = maxBubbles * 0.04;
     }
 
