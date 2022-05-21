@@ -29,6 +29,26 @@ new CircularFluidMeter(target, {
 });
 ```
 
+### Bundled version
+
+A new bundled version has been added. It can be accessed via the IIFE on the global scope.
+
+1 - Add the bundle file to your project (can be found as bundle.js in the /dist directory):
+
+```html
+<!-- make sure the path is correct -->
+<script src="dist/bundle.js"></script>
+```
+
+2 - Access via the IIFE on the global scope (named **cfmModule**):
+
+```js
+const target = document.querySelector("#target");
+new cfmModule.CircularFluidMeter(target, {
+  initialProgress: 33,
+});
+```
+
 #### Responsiveness
 
 The library is prepared to work on a responsive scenario if needed via the BreakpointValueConfig:
